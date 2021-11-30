@@ -37,7 +37,7 @@ public class Agente {
         if (percepciones[7]) { //X4 - Oeste
             vecCaracteristicas[3] = true;
         }
-        if (percepciones[0] || percepciones[2] //X5 - Pattern '+'
+        if (percepciones[0] || percepciones[2] //X5 - Pattern 'x'
                 || percepciones[4] || percepciones[6]) {
             vecCaracteristicas[4] = true;
         }
