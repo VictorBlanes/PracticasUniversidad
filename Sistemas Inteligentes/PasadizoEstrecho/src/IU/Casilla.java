@@ -8,7 +8,7 @@ import java.awt.geom.Ellipse2D;
 
 /**
  *
- * @author vicbl
+ * @author Victor Manuel Blanes Castro
  */
 public class Casilla {
        
