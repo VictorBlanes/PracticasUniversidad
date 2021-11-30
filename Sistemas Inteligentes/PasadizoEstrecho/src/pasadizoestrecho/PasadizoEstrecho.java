@@ -12,7 +12,7 @@ import javax.swing.JFrame;
 
 /**
  *
- * @author vicbl
+ * @author Victor Manuel Blanes Castro
  */
 public class PasadizoEstrecho extends JFrame implements MouseListener, KeyListener {
 
@@ -48,16 +48,21 @@ public class PasadizoEstrecho extends JFrame implements MouseListener, KeyListen
             int x = e.getX(), y = e.getY();
             int i = 0, j = 0;
             boolean encontrado = false;
+            //Busca la casilla que ha clickado el usuario
             for (i = 0; i < Tablero.DIMENSION && !encontrado; i++) {
                 for (j = 0; j < Tablero.DIMENSION && !encontrado; j++) {
                     encontrado = tablero.esCasilla(i, j, x, y);
                 }
             }
-//            System.out.println(i+" / "+j);
-            if (e.getButton() == MouseEvent.BUTTON1) {
-                tablero.ocuparDesocupar(--i, --j);
-            } else if (e.getButton() == MouseEvent.BUTTON3) {
-                tablero.setPlayer(--i, --j);
+            --i;
+            --j;
+            // El primer if evita que el usuario pueda eliminar los bordes del mapa
+            if (!(i == 0 || j == 0 || i == (Tablero.DIMENSION - 1) || j == (Tablero.DIMENSION - 1))) {
+                if (e.getButton() == MouseEvent.BUTTON1) {
+                    tablero.ocuparDesocupar(i, j);
+                } else if (e.getButton() == MouseEvent.BUTTON3) {
+                    tablero.setPlayer(i, j);
+                }
             }
             tablero.repaint();
         }
@@ -97,11 +102,8 @@ public class PasadizoEstrecho extends JFrame implements MouseListener, KeyListen
         ConjuntoAcciones accion;
         if (start) {
             robot.percibir(tablero);
-//            robot.printPercepciones();
             robot.actVecCaracteristicas();
-//            robot.printCaracteristicas();
             accion = robot.efecAccion(tablero);
-//            System.out.println(accion);
             tablero.repaint();
         }
     }

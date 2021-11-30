@@ -40,7 +40,11 @@ public class Tablero extends JPanel {
                 } else {
                     col = NEGRO;
                 }
-                t[i][j] = new Casilla(r, col, EstadoCasilla.NADA);
+                if(i == 0 || j == 0 || i == (DIMENSION - 1) || j == (DIMENSION - 1)){
+                    t[i][j] = new Casilla(r, col, EstadoCasilla.OCUPADA);
+                }else{
+                    t[i][j] = new Casilla(r, col, EstadoCasilla.NADA);
+                }
                 x += LADO;
             }
             y += LADO;
