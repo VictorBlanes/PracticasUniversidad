@@ -21,7 +21,8 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
-import javax.swing.JTextField;
+import javax.swing.JSpinner;
+import javax.swing.SpinnerNumberModel;
 
 /**
  *
@@ -29,81 +30,93 @@ import javax.swing.JTextField;
  */
 public class CuevaMonstruo extends JFrame implements MouseListener, KeyListener {
 
+    private static CuevaMonstruo cm;
     private static Tablero tablero;
     private static boolean start = false;
-    private static Agente robot = new Agente();
+    private static final Agente robot = new Agente();
+    private static JPanel opContainer, setDimension, subSetDimension, editorMode, ejecucion, subEjecucion;
+    private static JLabel modDimension, edMode, ejMode;
+    private static JButton bottonDimension, step, auto;
+    private static JRadioButton monstruo, tesoro, precipicio;
+    private static JSpinner campoDimension;
+    private static JCheckBox startEje;
+    private static ButtonGroup editorGroup;
 
     public CuevaMonstruo() {
         super("Cueva del monstruo practica");
-        tablero = new Tablero();
-        tablero.addMouseListener(this);
+        opContainer = new JPanel();
+        setDimension = new JPanel();
+        subSetDimension = new JPanel();
+        editorMode = new JPanel();
+        ejecucion = new JPanel();
+        subEjecucion = new JPanel();
+        modDimension = new JLabel("Modificar dimension");
+        edMode = new JLabel("Modo editor");
+        ejMode = new JLabel("Ejecutar programa");
+        bottonDimension = new JButton("OK");
+        step = new JButton("Step");
+        auto = new JButton("Auto");
+        monstruo = new JRadioButton("Monstruo");
+        tesoro = new JRadioButton("Tesoro");
+        precipicio = new JRadioButton("Precipicio");
+        campoDimension = new JSpinner(new SpinnerNumberModel(30,1,50,1));
+        startEje = new JCheckBox("Modo Ejecucion");
+        editorGroup = new ButtonGroup();
+        addComponents();
+    }
 
-        JPanel test = new JPanel();
-        test.setLayout(new BoxLayout(test, BoxLayout.Y_AXIS));
-
-        JPanel setDimension = new JPanel();
+    private void addComponents() { 
+        //Modificar Dimension IU
         setDimension.setLayout(new BoxLayout(setDimension, BoxLayout.Y_AXIS));
-        JLabel modDimension = new JLabel("Modificar dimension");
         modDimension.setAlignmentX(Component.CENTER_ALIGNMENT);
         setDimension.add(modDimension);
-
-        JPanel subSetDimension = new JPanel();
+        
         subSetDimension.setLayout(new BoxLayout(subSetDimension, BoxLayout.X_AXIS));
-        JTextField campoDimension = new JTextField();
-        JButton bottonDimension = new JButton("OK");
         campoDimension.setAlignmentY(Component.CENTER_ALIGNMENT);
         subSetDimension.add(campoDimension);
         subSetDimension.add(bottonDimension);
         setDimension.add(subSetDimension);
 
-        JPanel editorMode = new JPanel();
+        //Modo Editor IU
         editorMode.setLayout(new BoxLayout(editorMode, BoxLayout.Y_AXIS));
-        JLabel edMode = new JLabel("Modo editor");
-
-        JRadioButton monstruo = new JRadioButton("Monstruo");
-        JRadioButton tesoro = new JRadioButton("Tesoro");
-        JRadioButton precipicio = new JRadioButton("Precipicio");
-        ButtonGroup editorGroup = new ButtonGroup();
         editorGroup.add(monstruo);
         editorGroup.add(tesoro);
         editorGroup.add(precipicio);
-
         editorMode.add(edMode);
         editorMode.add(monstruo);
         editorMode.add(tesoro);
         editorMode.add(precipicio);
 
-        JPanel ejecucion = new JPanel();
-        ejecucion.setLayout(new BoxLayout(ejecucion, BoxLayout.Y_AXIS));
-        JLabel ejMode = new JLabel("Ejecutar programa");
-        JCheckBox startEje = new JCheckBox("Modo Ejecucion");
-        JPanel subEjecucion = new JPanel();
+        //Ejecutar Programa IU
         subEjecucion.setLayout(new BoxLayout(subEjecucion, BoxLayout.X_AXIS));
-        JButton step = new JButton("Step");
-        JButton auto = new JButton("Auto");
         subEjecucion.add(step);
         subEjecucion.add(auto);
+        
+        ejecucion.setLayout(new BoxLayout(ejecucion, BoxLayout.Y_AXIS));
         ejMode.setAlignmentX(Component.LEFT_ALIGNMENT);
         startEje.setAlignmentX(Component.LEFT_ALIGNMENT);
         subEjecucion.setAlignmentX(Component.LEFT_ALIGNMENT);
         ejecucion.add(ejMode);
         ejecucion.add(startEje);
         ejecucion.add(subEjecucion);
-
+        
+        //JPanel que reune todos los JPanel anteriores
+        opContainer.setLayout(new BoxLayout(opContainer, BoxLayout.Y_AXIS));
         setDimension.setAlignmentX(Component.LEFT_ALIGNMENT);
         editorMode.setAlignmentX(Component.LEFT_ALIGNMENT);
         ejecucion.setAlignmentX(Component.LEFT_ALIGNMENT);
+        opContainer.add(Box.createRigidArea(new Dimension(10, 30)));
+        opContainer.add(setDimension);
+        opContainer.add(Box.createRigidArea(new Dimension(10, 150)));
+        opContainer.add(editorMode);
+        opContainer.add(Box.createRigidArea(new Dimension(10, 210)));
+        opContainer.add(ejecucion);
+        opContainer.add(Box.createRigidArea(new Dimension(10, 10)));
 
-        test.add(Box.createRigidArea(new Dimension(10, 30)));
-        test.add(setDimension);
-        test.add(Box.createRigidArea(new Dimension(10, 150)));
-        test.add(editorMode);
-        test.add(Box.createRigidArea(new Dimension(10, 210)));
-        test.add(ejecucion);
-        test.add(Box.createRigidArea(new Dimension(10, 10)));
-
+        tablero = new Tablero();
+        tablero.addMouseListener(this);
         this.setLayout(new FlowLayout());
-        this.getContentPane().add(test);
+        this.getContentPane().add(opContainer);
         this.getContentPane().add(tablero);
         this.setSize(tablero.getPreferredSize());
         this.pack();
@@ -188,8 +201,11 @@ public class CuevaMonstruo extends JFrame implements MouseListener, KeyListener 
     }
 
     public static void main(String[] args) {
-        CuevaMonstruo pe = new CuevaMonstruo();
-        pe.setVisible(true);
+    cm = new CuevaMonstruo();
+
+    cm.setVisible (
+
+true);
 
     }
 
