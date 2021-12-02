@@ -8,6 +8,7 @@ import IU.Tablero;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
@@ -59,18 +60,18 @@ public class CuevaMonstruo extends JFrame implements MouseListener, KeyListener 
         monstruo = new JRadioButton("Monstruo");
         tesoro = new JRadioButton("Tesoro");
         precipicio = new JRadioButton("Precipicio");
-        campoDimension = new JSpinner(new SpinnerNumberModel(30,1,50,1));
+        campoDimension = new JSpinner(new SpinnerNumberModel(5, 1, 20, 1));
         startEje = new JCheckBox("Modo Ejecucion");
         editorGroup = new ButtonGroup();
         addComponents();
     }
 
-    private void addComponents() { 
+    private void addComponents() {
         //Modificar Dimension IU
         setDimension.setLayout(new BoxLayout(setDimension, BoxLayout.Y_AXIS));
         modDimension.setAlignmentX(Component.CENTER_ALIGNMENT);
         setDimension.add(modDimension);
-        
+
         subSetDimension.setLayout(new BoxLayout(subSetDimension, BoxLayout.X_AXIS));
         campoDimension.setAlignmentY(Component.CENTER_ALIGNMENT);
         subSetDimension.add(campoDimension);
@@ -91,7 +92,7 @@ public class CuevaMonstruo extends JFrame implements MouseListener, KeyListener 
         subEjecucion.setLayout(new BoxLayout(subEjecucion, BoxLayout.X_AXIS));
         subEjecucion.add(step);
         subEjecucion.add(auto);
-        
+
         ejecucion.setLayout(new BoxLayout(ejecucion, BoxLayout.Y_AXIS));
         ejMode.setAlignmentX(Component.LEFT_ALIGNMENT);
         startEje.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -99,7 +100,7 @@ public class CuevaMonstruo extends JFrame implements MouseListener, KeyListener 
         ejecucion.add(ejMode);
         ejecucion.add(startEje);
         ejecucion.add(subEjecucion);
-        
+
         //JPanel que reune todos los JPanel anteriores
         opContainer.setLayout(new BoxLayout(opContainer, BoxLayout.Y_AXIS));
         setDimension.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -115,6 +116,22 @@ public class CuevaMonstruo extends JFrame implements MouseListener, KeyListener 
 
         tablero = new Tablero();
         tablero.addMouseListener(this);
+
+        bottonDimension.addActionListener((ActionEvent evt) -> {
+            tablero.resizeArray((int) campoDimension.getValue());
+            repaint();
+        });
+        step.addActionListener((ActionEvent evt) -> {
+            if (startEje.isSelected()) {
+                nextAccion();
+            }
+        });
+        auto.addActionListener((ActionEvent evt) -> {
+            if (startEje.isSelected()) {
+                System.out.println("Auto");
+            }
+        });
+
         this.setLayout(new FlowLayout());
         this.getContentPane().add(opContainer);
         this.getContentPane().add(tablero);
@@ -137,7 +154,7 @@ public class CuevaMonstruo extends JFrame implements MouseListener, KeyListener 
 
     @Override
     public void mouseReleased(MouseEvent e) {
-        if (!start) {
+        if (!startEje.isSelected()) {
             int x = e.getX(), y = e.getY();
             int i, j = 0;
             boolean encontrado = false;
@@ -149,13 +166,13 @@ public class CuevaMonstruo extends JFrame implements MouseListener, KeyListener 
             }
             --i;
             --j;
-            // El primer if evita que el usuario pueda eliminar los bordes del mapa
-            if (!(i == 0 || j == 0 || i == (Tablero.DIMENSION - 1) || j == (Tablero.DIMENSION - 1))) {
-                if (e.getButton() == MouseEvent.BUTTON1) {
-                    tablero.ocuparDesocupar(i, j);
-                } else if (e.getButton() == MouseEvent.BUTTON3) {
-                    tablero.setPlayer(i, j);
-                }
+            //[JUGADOR, PRECIPICIO, TESORO, MONSTRUO]
+            if (monstruo.isSelected()) {
+                tablero.setEspecificoEstadoCasilla(i, j, 3);
+            } else if (tesoro.isSelected()) {
+                tablero.setEspecificoEstadoCasilla(i, j, 2);
+            } else if (precipicio.isSelected()) {
+                tablero.setEspecificoEstadoCasilla(i, j, 1);
             }
             tablero.repaint();
         }
@@ -192,20 +209,17 @@ public class CuevaMonstruo extends JFrame implements MouseListener, KeyListener 
     }
 
     private static void nextAccion() {
-        if (start) {
-            robot.percibir(tablero);
-            robot.actVecCaracteristicas();
-            robot.efecAccion(tablero);
-            tablero.repaint();
-        }
+        robot.percibir(tablero);
+        robot.actVecCaracteristicas();
+        robot.efecAccion(tablero);
+        tablero.repaint();
     }
 
     public static void main(String[] args) {
-    cm = new CuevaMonstruo();
+        cm = new CuevaMonstruo();
 
-    cm.setVisible (
-
-true);
+        cm.setVisible(
+                true);
 
     }
 

@@ -11,29 +11,38 @@ import java.awt.geom.Ellipse2D;
  * @author Victor Manuel Blanes Castro
  */
 public class Casilla {
-       
+
     private Rectangle2D.Float rec;
     private Color col;
-    private EstadoCasilla casilla;
+    private boolean[] estadoCasilla = new boolean[4];
 
-    public Casilla(Rectangle2D.Float r, Color c, EstadoCasilla ocu ) {
+    public Casilla(Rectangle2D.Float r, Color c, boolean[] ocu) {
         this.rec = r;
         this.col = c;
-        this.casilla = ocu;
+        //[JUGADOR, PRECIPICIO, TESORO, MONSTRUO]
+        this.estadoCasilla = ocu;
     }
 
     public void paintComponent(Graphics g) {
         Graphics2D g2d = (Graphics2D) g;
-        if(this.casilla.equals(EstadoCasilla.OCUPADA)){
-            g2d.setColor(Color.BLACK);
-        }else{
-            g2d.setColor(this.col);
-        }
+        g2d.setColor(col);
         g2d.fill(this.rec);
-        if(this.casilla.equals(EstadoCasilla.JUGADOR)){
-            Ellipse2D.Float eli = new Ellipse2D.Float(this.rec.x, this.rec.y, 
-                    this.rec.width, this.rec.height);
+        Ellipse2D.Float eli = new Ellipse2D.Float(this.rec.x, this.rec.y,
+                this.rec.width, this.rec.height);
+        if (this.estadoCasilla[0]) {
             g2d.setColor(Color.BLACK);
+            g2d.fill(eli);
+        }
+        if (this.estadoCasilla[1]) {
+            g2d.setColor(Color.CYAN);
+            g2d.fill(eli);
+        }
+        if (this.estadoCasilla[2]) {
+            g2d.setColor(Color.YELLOW);
+            g2d.fill(eli);
+        }
+        if (this.estadoCasilla[3]) {
+            g2d.setColor(Color.RED);
             g2d.fill(eli);
         }
     }
@@ -42,14 +51,16 @@ public class Casilla {
         return rec;
     }
 
-    public EstadoCasilla getCasilla() {
-        return casilla;
+    public boolean[] getEstadoCasilla() {
+        return estadoCasilla;
     }
 
-    public void setCasilla(EstadoCasilla casilla) {
-        this.casilla = casilla;
+    public void setEstadoCasilla(boolean[] estadoCasilla) {
+        this.estadoCasilla = estadoCasilla;
     }
 
-  
+    public void setEspecificoEstadoCasilla(boolean estado, int index) {
+        this.estadoCasilla[index] = estado;
+    }
 
 }

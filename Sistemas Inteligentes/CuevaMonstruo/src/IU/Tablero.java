@@ -14,16 +14,17 @@ import cuevamonstruo.ConjuntoAcciones;
  */
 public class Tablero extends JPanel {
 
-    public static final int DIMENSION = 30;
+    public static int DIMENSION = 5;
 
     private static final int MAXIMO = 600;
-    private static final int LADO = MAXIMO / DIMENSION;
+    private static int LADO = MAXIMO / DIMENSION;
     private static final Color BLANCO = new Color(242, 242, 242);
     private static final Color NEGRO = new Color(230, 230, 230);
     private Casilla t[][];
     private boolean jugadorEnMapa = false;
 
     public Tablero() {
+        boolean[] estados;
         t = new Casilla[DIMENSION][DIMENSION];
         int y = 0;
         for (int i = 0; i < DIMENSION; i++) {
@@ -36,15 +37,48 @@ public class Tablero extends JPanel {
                 } else {
                     col = NEGRO;
                 }
-                if(i == 0 || j == 0 || i == (DIMENSION - 1) || j == (DIMENSION - 1)){
-                    t[i][j] = new Casilla(r, col, EstadoCasilla.OCUPADA);
-                }else{
-                    t[i][j] = new Casilla(r, col, EstadoCasilla.NADA);
+                estados = new boolean[4];
+                t[i][j] = new Casilla(r, col, estados);
+                x += LADO;
+            }
+            y += LADO;
+        }
+    }
+
+    public void resizeArray(int dim) {
+        //[JUGADOR, PRECIPICIO, TESORO, MONSTRUO]
+        boolean[] estados;
+        int oldDimension = DIMENSION - 1;
+        DIMENSION = dim;
+        LADO = MAXIMO / DIMENSION;
+        boolean player = false;
+        Casilla t2[][] = new Casilla[DIMENSION][DIMENSION];
+        int y = 0;
+        for (int i = 0; i < DIMENSION; i++) {
+            int x = 0;
+            for (int j = 0; j < DIMENSION; j++) {
+                Rectangle2D.Float r = new Rectangle2D.Float(x, y, LADO, LADO);
+                Color col;
+                if ((i % 2 == 1 && j % 2 == 1) || (i % 2 == 0 && j % 2 == 0)) {
+                    col = BLANCO;
+                } else {
+                    col = NEGRO;
+                }
+                if (i < oldDimension && j < oldDimension) {
+                    if (t[i][j].getEstadoCasilla()[0]) {
+                        player = true;
+                    }
+                    t2[i][j] = new Casilla(r, col, t[i][j].getEstadoCasilla());
+                } else {
+                    estados = new boolean[4];
+                    t2[i][j] = new Casilla(r, col, estados);
                 }
                 x += LADO;
             }
             y += LADO;
         }
+        t = t2;
+        jugadorEnMapa = player;
     }
 
     @Override
@@ -65,24 +99,18 @@ public class Tablero extends JPanel {
         return t[i][j].getRec().contains(x, y);
     }
 
-    public EstadoCasilla estaOcupado(int i, int j) {
-        return t[i][j].getCasilla();
-    }
-
-    public void ocuparDesocupar(int i, int j) {
-        if (t[i][j].getCasilla().equals(EstadoCasilla.NADA)) {
-            t[i][j].setCasilla(EstadoCasilla.OCUPADA);
-        } else if (t[i][j].getCasilla().equals(EstadoCasilla.OCUPADA)) {
-            t[i][j].setCasilla(EstadoCasilla.NADA);
-        }
+    public boolean estaOcupado(int i, int j) {
+        return t[i][j].getEstadoCasilla()[0];
     }
 
     public void setPlayer(int i, int j) {
-        if (t[i][j].getCasilla().equals(EstadoCasilla.NADA) && !jugadorEnMapa) {
-            t[i][j].setCasilla(EstadoCasilla.JUGADOR);
+        boolean[] estado = {false, false, false, false};
+        if (!contains(t[i][j].getEstadoCasilla(), true) && !jugadorEnMapa) {
+            estado[0] = true;
+            t[i][j].setEspecificoEstadoCasilla(true, 0);
             jugadorEnMapa = true;
-        } else if (t[i][j].getCasilla().equals(EstadoCasilla.JUGADOR)) {
-            t[i][j].setCasilla(EstadoCasilla.NADA);
+        } else if (t[i][j].getEstadoCasilla()[0]) {
+            t[i][j].setEspecificoEstadoCasilla(false, 0);
             jugadorEnMapa = false;
         }
     }
@@ -92,21 +120,20 @@ public class Tablero extends JPanel {
         int i = 0, j = 0;
         for (i = 0; i < Tablero.DIMENSION && !encontrado; i++) {
             for (j = 0; j < Tablero.DIMENSION && !encontrado; j++) {
-                encontrado
-                        = t[i][j].getCasilla().equals(EstadoCasilla.JUGADOR);
+                encontrado = t[i][j].getEstadoCasilla()[0];
             }
         }
-        t[--i][--j].setCasilla(EstadoCasilla.NADA);
         if (encontrado) {
+            t[--i][--j].setEspecificoEstadoCasilla(false, 0);
             switch (accion) {
                 case NORTE ->
-                    t[--i][j].setCasilla(EstadoCasilla.JUGADOR);
+                    t[--i][j].setEspecificoEstadoCasilla(true, 0);
                 case SUR ->
-                    t[++i][j].setCasilla(EstadoCasilla.JUGADOR);
+                    t[++i][j].setEspecificoEstadoCasilla(true, 0);
                 case ESTE ->
-                    t[i][++j].setCasilla(EstadoCasilla.JUGADOR);
+                    t[i][++j].setEspecificoEstadoCasilla(true, 0);
                 case OESTE ->
-                    t[i][--j].setCasilla(EstadoCasilla.JUGADOR);
+                    t[i][--j].setEspecificoEstadoCasilla(true, 0);
             }
         }
     }
@@ -116,49 +143,64 @@ public class Tablero extends JPanel {
     }
 
     public boolean[] setPercepciones() {
-        int i = 0, j = 0;
-        boolean encontrado = false;
-        for (i = 0; i < Tablero.DIMENSION && !encontrado; i++) {
-            for (j = 0; j < Tablero.DIMENSION && !encontrado; j++) {
-                encontrado
-                        = t[i][j].getCasilla().equals(EstadoCasilla.JUGADOR);
+//        int i = 0, j = 0;
+//        boolean encontrado = false;
+//        for (i = 0; i < Tablero.DIMENSION && !encontrado; i++) {
+//            for (j = 0; j < Tablero.DIMENSION && !encontrado; j++) {
+//                encontrado = t[i][j].getEstadoCasilla()[0];
+//            }
+//        }
+//        i--;
+//        j--;
+//        boolean[] percepciones = new boolean[8];
+//        if (i > 0 && j > 0 && encontrado
+//                && t[i - 1][j - 1].getCasilla().equals(EstadoCasilla.OCUPADA)) {
+//            percepciones[0] = true;
+//        } //S1
+//        if (i > 0 && encontrado
+//                && t[i - 1][j].getCasilla().equals(EstadoCasilla.OCUPADA)) {
+//            percepciones[1] = true;
+//        } //S2
+//        if (j < (DIMENSION - 1) && i > 0 && encontrado
+//                && t[i - 1][j + 1].getCasilla().equals(EstadoCasilla.OCUPADA)) {
+//            percepciones[2] = true;
+//        } //S3
+//        if (j < (DIMENSION - 1) && encontrado
+//                && t[i][j + 1].getCasilla().equals(EstadoCasilla.OCUPADA)) {
+//            percepciones[3] = true;
+//        } //S4
+//        if (i < (DIMENSION - 1) && j < (DIMENSION - 1) && encontrado
+//                && t[i + 1][j + 1].getCasilla().equals(EstadoCasilla.OCUPADA)) {
+//            percepciones[4] = true;
+//        } //S5
+//        if (i < (DIMENSION - 1) && encontrado
+//                && t[i + 1][j].getCasilla().equals(EstadoCasilla.OCUPADA)) {
+//            percepciones[5] = true;
+//        } //S6
+//        if (j > 0 && i < (DIMENSION - 1) && encontrado
+//                && t[i + 1][j - 1].getCasilla().equals(EstadoCasilla.OCUPADA)) {
+//            percepciones[6] = true;
+//        } //S7
+//        if (j > 0 && encontrado
+//                && t[i][j - 1].getCasilla().equals(EstadoCasilla.OCUPADA)) {
+//            percepciones[7] = true;
+//        } //S8
+//        return percepciones;
+        return null;
+    }
+
+    private boolean contains(boolean[] b, boolean mark) {
+        for (int i = 0; i < b.length; i++) {
+            if (b[i] == mark) {
+                return true;
             }
         }
-        i--;
-        j--;
-        boolean[] percepciones = new boolean[8];
-        if (i > 0 && j > 0 && encontrado
-                && t[i - 1][j - 1].getCasilla().equals(EstadoCasilla.OCUPADA)) {
-            percepciones[0] = true;
-        } //S1
-        if (i > 0 && encontrado
-                && t[i - 1][j].getCasilla().equals(EstadoCasilla.OCUPADA)) {
-            percepciones[1] = true;
-        } //S2
-        if (j < (DIMENSION - 1) && i > 0 && encontrado
-                && t[i - 1][j + 1].getCasilla().equals(EstadoCasilla.OCUPADA)) {
-            percepciones[2] = true;
-        } //S3
-        if (j < (DIMENSION - 1) && encontrado
-                && t[i][j + 1].getCasilla().equals(EstadoCasilla.OCUPADA)) {
-            percepciones[3] = true;
-        } //S4
-        if (i < (DIMENSION - 1) && j < (DIMENSION - 1) && encontrado
-                && t[i + 1][j + 1].getCasilla().equals(EstadoCasilla.OCUPADA)) {
-            percepciones[4] = true;
-        } //S5
-        if (i < (DIMENSION - 1) && encontrado
-                && t[i + 1][j].getCasilla().equals(EstadoCasilla.OCUPADA)) {
-            percepciones[5] = true;
-        } //S6
-        if (j > 0 && i < (DIMENSION - 1) && encontrado
-                && t[i + 1][j - 1].getCasilla().equals(EstadoCasilla.OCUPADA)) {
-            percepciones[6] = true;
-        } //S7
-        if (j > 0 && encontrado
-                && t[i][j - 1].getCasilla().equals(EstadoCasilla.OCUPADA)) {
-            percepciones[7] = true;
-        } //S8
-        return percepciones;
+        return false;
+    }
+
+    public void setEspecificoEstadoCasilla(int i, int j,  int index) {
+        boolean[] estado = new boolean[4];
+        estado[index] = !t[i][j].getEstadoCasilla()[index];
+        t[i][j].setEstadoCasilla(estado);
     }
 }
