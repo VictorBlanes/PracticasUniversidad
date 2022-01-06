@@ -75,7 +75,7 @@ public class Tablero extends JPanel {
                 } else {
                     col = NEGRO;
                 }
-                if (i < oldDimension && j < oldDimension) {
+                if (i <= oldDimension && j <= oldDimension) {
                     if (t[i][j].getEstadoCasilla()[0]) {
                         player = true;
                     }
@@ -146,6 +146,20 @@ public class Tablero extends JPanel {
                 case OESTE ->
                     t[i][--j].setEspecificoEstadoCasilla(true, 0);
             }
+        }
+    }
+    
+    public void moverPlayer(int x, int y) {
+        boolean encontrado = false;
+        int i = 0, j = 0;
+        for (i = 0; i < Tablero.DIMENSION && !encontrado; i++) {
+            for (j = 0; j < Tablero.DIMENSION && !encontrado; j++) {
+                encontrado = t[i][j].getEstadoCasilla()[0];
+            }
+        }
+        if(encontrado){
+            t[--i][--j].setEspecificoEstadoCasilla(false, 0);
+            t[x][y].setEspecificoEstadoCasilla(true, 0);
         }
     }
 

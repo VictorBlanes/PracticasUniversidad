@@ -31,7 +31,6 @@ public class Agente {
         int i = (Tablero.DIMENSION - 1) - posy;
         int j = posx;
         percepciones = tbl.setPercepciones(i, j);
-        printPercepciones();
         reglasJuego();
         return percepciones;
     }
@@ -102,16 +101,16 @@ public class Agente {
                     Logger.getLogger(Agente.class.getName()).log(Level.SEVERE, null, ex);
                 }
 
-                System.out.printf("Pre %d / %d\n", x, y);
-                System.out.println(acc);
+//                System.out.printf("Pre %d / %d\n", x, y);
+//                System.out.println(acc);
                 switch (acc) {
                     case NORTE:
                         bc.addCostes(x, y + 1);
-                        costes[iacc]++;
+                        costes[iacc] = Integer.MAX_VALUE;
                         if (bc.isOk(x, y + 1)) {
                             posx = x;
                             posy = y + 1;
-                            System.out.printf("Post %d / %d\n", posx, posy);
+//                            System.out.printf("Post %d / %d\n", posx, posy);
                             tbl.moverPlayer(acc);
                             tbl.repaint();
                             res = efecAccion(tbl, posx, posy);
@@ -124,11 +123,11 @@ public class Agente {
                         break;
                     case SUR:
                         bc.addCostes(x, y - 1);
-                        costes[iacc]++;
+                        costes[iacc] = Integer.MAX_VALUE;
                         if (bc.isOk(x, y - 1)) {
                             posx = x;
                             posy = y - 1;
-                            System.out.printf("Post %d / %d\n", posx, posy);
+//                            System.out.printf("Post %d / %d\n", posx, posy);
                             tbl.moverPlayer(acc);
                             tbl.repaint();
                             res = efecAccion(tbl, posx, posy);
@@ -141,11 +140,11 @@ public class Agente {
                         break;
                     case ESTE:
                         bc.addCostes(x + 1, y);
-                        costes[iacc]++;
+                        costes[iacc] = Integer.MAX_VALUE;
                         if (bc.isOk(x + 1, y)) {
                             posx = x + 1;
                             posy = y;
-                            System.out.printf("Post %d / %d\n", posx, posy);
+//                            System.out.printf("Post %d / %d\n", posx, posy);
                             tbl.moverPlayer(acc);
                             tbl.repaint();
                             res = efecAccion(tbl, posx, posy);
@@ -158,11 +157,11 @@ public class Agente {
                         break;
                     case OESTE:
                         bc.addCostes(x - 1, y);
-                        costes[iacc]++;
+                        costes[iacc] = Integer.MAX_VALUE;
                         if (bc.isOk(x - 1, y)) {
                             posx = x - 1;
                             posy = y;
-                            System.out.printf("Post %d / %d\n", posx, posy);
+//                            System.out.printf("Post %d / %d\n", posx, posy);
                             tbl.moverPlayer(acc);
                             tbl.repaint();
                             res = efecAccion(tbl, posx, posy);
@@ -228,5 +227,10 @@ public class Agente {
             }
         }
         return res;
+    }
+    
+    public void resizeBc(int Dim){
+        bc.resizeBc(Dim);
+        posx = 0; posy = 0;
     }
 }

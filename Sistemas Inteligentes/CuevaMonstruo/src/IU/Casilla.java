@@ -42,27 +42,6 @@ public class Casilla extends JPanel {
     }
 
     public void paintComponent(Graphics g) {
-//        Graphics2D g2d = (Graphics2D) g;
-//        g2d.setColor(col);
-//        g2d.fill(this.rec);
-//        Ellipse2D.Float eli = new Ellipse2D.Float(this.rec.x, this.rec.y,
-//                this.rec.width, this.rec.height);
-//        if (this.estadoCasilla[0]) {
-//            g2d.setColor(Color.BLACK);
-//            g2d.fill(eli);
-//        }
-//        if (this.estadoCasilla[1]) {
-//            g2d.setColor(Color.CYAN);
-//            g2d.fill(eli);
-//        }
-//        if (this.estadoCasilla[2]) {
-//            g2d.setColor(Color.YELLOW);
-//            g2d.fill(eli);
-//        }
-//        if (this.estadoCasilla[3]) {
-//            g2d.setColor(Color.RED);
-//            g2d.fill(eli);
-//        }
         Graphics2D g2d = (Graphics2D) g;
         g2d.setColor(col);
         g2d.fill(this.rec);

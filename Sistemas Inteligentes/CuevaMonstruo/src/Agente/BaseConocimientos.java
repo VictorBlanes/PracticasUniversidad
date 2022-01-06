@@ -154,8 +154,26 @@ public class BaseConocimientos {
         int[] res = {norte, este, sur, oeste};
         return res;
     }
-    
-    public void addCostes(int posx, int posy){
+
+    public void addCostes(int posx, int posy) {
         costes[posx][posy]++;
+    }
+
+    public void resizeBc(int dim) {
+        //[JUGADOR, PRECIPICIO, TESORO, MONSTRUO]
+        boolean[] estados;
+        int oldDimension = bC.length - 1;
+        int[][][] bC2 = new int[dim][dim][5];
+        int[][] costes2 = new int[dim][dim];
+        for (int i = 0; i < dim; i++) {
+            for (int j = 0; j < dim; j++) {
+                if (i <= oldDimension && j <= oldDimension) {
+                    bC2[i][j] = bC[i][j];
+                    costes2[i][j] = costes[i][j];
+                }
+            }
+        }
+        bC = bC2;
+        costes = costes2;
     }
 }

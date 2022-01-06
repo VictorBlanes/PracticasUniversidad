@@ -119,6 +119,8 @@ public class CuevaMonstruo extends JFrame implements MouseListener, KeyListener 
 
         bottonDimension.addActionListener((ActionEvent evt) -> {
             tablero.resizeArray((int) campoDimension.getValue());
+            robot.resizeBc((int) campoDimension.getValue());
+            tablero.moverPlayer(Tablero.DIMENSION - 1, 0);
             repaint();
         });
         step.addActionListener((ActionEvent evt) -> {
@@ -167,7 +169,6 @@ public class CuevaMonstruo extends JFrame implements MouseListener, KeyListener 
             }
             --i;
             --j;
-            System.out.println(i + " " + j);
             //[JUGADOR, PRECIPICIO, TESORO, MONSTRUO]
             if (monstruo.isSelected()) {
                 tablero.setEspecificoEstadoCasilla(i, j, 3);
