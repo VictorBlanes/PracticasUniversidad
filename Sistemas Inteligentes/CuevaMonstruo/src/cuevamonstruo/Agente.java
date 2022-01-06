@@ -81,10 +81,17 @@ public class Agente {
         A partir del vector de caracteristicas y la accion anterior elige 
         que accion tomar.
      */
-    public boolean efecAccion(ConjuntoAcciones returnAccion, Tablero tbl, int x, int y) {
+    public boolean efecAccion(Tablero tbl, int x, int y) {
+        boolean res = false;
         percibir(tbl);
-        for (ConjuntoAcciones acc : ConjuntoAcciones.values()) {
-            if (acc != returnAccion) {
+        if (percepciones[2]) {
+            return true;
+        }
+        int[] costes = bc.getCostes(x, y);
+        for (int i = 0; i < costes.length; i++) {
+            int iacc = chooseLowest(costes);
+            if (iacc < Integer.MAX_VALUE) {
+                ConjuntoAcciones acc = ConjuntoAcciones.values()[iacc];
                 try {
                     if (auto) {
                         Thread.sleep(150);
@@ -94,53 +101,74 @@ public class Agente {
                 } catch (InterruptedException ex) {
                     Logger.getLogger(Agente.class.getName()).log(Level.SEVERE, null, ex);
                 }
+
                 System.out.printf("Pre %d / %d\n", x, y);
                 System.out.println(acc);
                 switch (acc) {
                     case NORTE:
+                        bc.addCostes(x, y + 1);
+                        costes[iacc]++;
                         if (bc.isOk(x, y + 1)) {
                             posx = x;
                             posy = y + 1;
                             System.out.printf("Post %d / %d\n", posx, posy);
                             tbl.moverPlayer(acc);
                             tbl.repaint();
-                            efecAccion(acc.SUR, tbl, posx, posy);
+                            res = efecAccion(tbl, posx, posy);
+                            if (res) {
+                                return true;
+                            }
                         } else if (!auto) {
                             mutex.release();
                         }
                         break;
                     case SUR:
+                        bc.addCostes(x, y - 1);
+                        costes[iacc]++;
                         if (bc.isOk(x, y - 1)) {
                             posx = x;
                             posy = y - 1;
                             System.out.printf("Post %d / %d\n", posx, posy);
                             tbl.moverPlayer(acc);
                             tbl.repaint();
-                            efecAccion(acc.NORTE, tbl, posx, posy);
+                            res = efecAccion(tbl, posx, posy);
+                            if (res) {
+                                return true;
+                            }
                         } else if (!auto) {
                             mutex.release();
                         }
                         break;
                     case ESTE:
+                        bc.addCostes(x + 1, y);
+                        costes[iacc]++;
                         if (bc.isOk(x + 1, y)) {
                             posx = x + 1;
                             posy = y;
                             System.out.printf("Post %d / %d\n", posx, posy);
                             tbl.moverPlayer(acc);
                             tbl.repaint();
-                            efecAccion(acc.OESTE, tbl, posx, posy);
+                            res = efecAccion(tbl, posx, posy);
+                            if (res) {
+                                return true;
+                            }
                         } else if (!auto) {
                             mutex.release();
                         }
                         break;
                     case OESTE:
+                        bc.addCostes(x - 1, y);
+                        costes[iacc]++;
                         if (bc.isOk(x - 1, y)) {
                             posx = x - 1;
                             posy = y;
                             System.out.printf("Post %d / %d\n", posx, posy);
                             tbl.moverPlayer(acc);
                             tbl.repaint();
-                            efecAccion(acc.ESTE, tbl, posx, posy);
+                            res = efecAccion(tbl, posx, posy);
+                            if (res) {
+                                return true;
+                            }
                         } else if (!auto) {
                             mutex.release();
                         }
@@ -148,22 +176,7 @@ public class Agente {
                 }
             }
         }
-        if (returnAccion != null) {
-
-            tbl.moverPlayer(returnAccion);
-            tbl.repaint();
-            try {
-                if (!auto) {
-                    mutex.acquire();
-                }
-            } catch (InterruptedException ex) {
-                Logger.getLogger(Agente.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }else{
-            System.out.println("No hay mas acciones posibles.");
-        }
-
-        return true;
+        return false;
     }
 
     public void printPercepciones() {
@@ -204,5 +217,16 @@ public class Agente {
         if (mutex.hasQueuedThreads()) {
             mutex.release();
         }
+    }
+
+    private int chooseLowest(int[] arr) {
+        int i = 0, res = -1, lowest = Integer.MAX_VALUE;
+        for (i = 0; i < arr.length; i++) {
+            if (arr[i] < lowest) {
+                res = i;
+                lowest = arr[i];
+            }
+        }
+        return res;
     }
 }

@@ -204,15 +204,19 @@ public class CuevaMonstruo extends JFrame implements MouseListener, KeyListener 
     public void keyReleased(KeyEvent e) {
     }
 
-    private static void startRobot() {
-        robot.efecAccion(null, tablero, 0, 0);
+    private static boolean startRobot() {
+        return robot.efecAccion(tablero, 0, 0);
     }
 
     public static void main(String[] args) {
+        VentanaFinal vf = new VentanaFinal();
+        boolean res = false;
         cm = new CuevaMonstruo();
         cm.setVisible(true);
-        startRobot();
-
+        res = startRobot();
+        if (res){
+            vf.setVisible(true);
+        }
     }
 
 }

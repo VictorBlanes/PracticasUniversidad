@@ -34,6 +34,7 @@ public class Tablero extends JPanel {
     public static final int GOLPE = 3;
 
     public Tablero() {
+        new Casilla();
         boolean[] estados;
         t = new Casilla[DIMENSION][DIMENSION];
         int y = 0;
@@ -157,10 +158,6 @@ public class Tablero extends JPanel {
         if (posx == 0 || posy == 0 || posx == (DIMENSION - 1) || posy == (DIMENSION - 1)) {
             percepciones[GOLPE] = true;
         }
-        boolean test1 = (posx > 0 && t[posx - 1][posy].getEstadoCasilla()[MONSTRUO]);
-        boolean test2 = (posx < (DIMENSION - 1) && t[posx + 1][posy].getEstadoCasilla()[MONSTRUO]);
-        boolean test3 = (posy > 0 && t[posx][posy - 1].getEstadoCasilla()[MONSTRUO]);
-        boolean test4 = posy < (DIMENSION - 1) && t[posx][posy + 1].getEstadoCasilla()[MONSTRUO];
         if ((posx > 0 && t[posx - 1][posy].getEstadoCasilla()[MONSTRUO])
                 || (posx < (DIMENSION - 1) && t[posx + 1][posy].getEstadoCasilla()[MONSTRUO])
                 || (posy > 0 && t[posx][posy - 1].getEstadoCasilla()[MONSTRUO])

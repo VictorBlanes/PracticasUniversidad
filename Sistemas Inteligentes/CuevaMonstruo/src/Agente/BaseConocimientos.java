@@ -17,6 +17,7 @@ public class BaseConocimientos {
     public static final int PUEDE = 2;
     public static final int SI = 3;
     int[][][] bC = new int[Tablero.DIMENSION][Tablero.DIMENSION][5];
+    int[][] costes = new int[Tablero.DIMENSION][Tablero.DIMENSION];
     private Stack pilaAct = new Stack();
 
     public void añadirRegla(int posx, int posy, int regla, int value, boolean check) {
@@ -135,13 +136,26 @@ public class BaseConocimientos {
         }
     }
 
-    public boolean isOk(int posx, int posy){
+    public boolean isOk(int posx, int posy) {
         boolean res = (inBounds(posx, posy) && bC[posx][posy][MONSTRUO] == NO && bC[posx][posy][PRECIPICIO] == NO);
         return res;
     }
-    
+
     private boolean inBounds(int posx, int posy) {
-        boolean res =(posx >= 0 && posx < Tablero.DIMENSION && posy >= 0 && posy < Tablero.DIMENSION);
+        boolean res = (posx >= 0 && posx < Tablero.DIMENSION && posy >= 0 && posy < Tablero.DIMENSION);
         return res;
+    }
+
+    public int[] getCostes(int posx, int posy) {
+        int norte = inBounds(posx, posy + 1) ? costes[posx][posy + 1] : Integer.MAX_VALUE;
+        int este = inBounds(posx + 1, posy) ? costes[posx + 1][posy] : Integer.MAX_VALUE;
+        int sur = inBounds(posx, posy - 1) ? costes[posx][posy - 1] : Integer.MAX_VALUE;
+        int oeste = inBounds(posx - 1, posy) ? costes[posx - 1][posy] : Integer.MAX_VALUE;
+        int[] res = {norte, este, sur, oeste};
+        return res;
+    }
+    
+    public void addCostes(int posx, int posy){
+        costes[posx][posy]++;
     }
 }
