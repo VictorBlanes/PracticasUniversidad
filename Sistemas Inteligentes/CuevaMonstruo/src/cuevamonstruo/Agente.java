@@ -1,6 +1,10 @@
 package cuevamonstruo;
 
 import IU.Tablero;
+import Agente.BaseConocimientos;
+import java.util.concurrent.Semaphore;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -8,44 +12,68 @@ import IU.Tablero;
  */
 public class Agente {
 
-    private boolean[] percepciones = new boolean[8];
+    private boolean[] percepciones = new boolean[4];
     private boolean[] vecCaracteristicas = new boolean[6];
     private boolean[] lastVecCaracteristicas = new boolean[6];
     private ConjuntoAcciones lastAccion;
+    private int posx, posy;
+    private BaseConocimientos bc = new BaseConocimientos();
+    static Semaphore mutex = new Semaphore(0);
+    static boolean auto = false;
 
     public Agente() {
+        posx = 0;
+        posy = 0;
     }
 
+//  [Hedor, Brisa, Resplandor, Golpe]
     public boolean[] percibir(Tablero tbl) {
-//        percepciones = tbl.setPercepciones();
+        int i = (Tablero.DIMENSION - 1) - posy;
+        int j = posx;
+        percepciones = tbl.setPercepciones(i, j);
+        printPercepciones();
+        reglasJuego();
         return percepciones;
     }
 
     /* actVecCaracteristicas
         A partir de las percepciones del agente actualiza el vector de caractersiticas.
      */
-    public boolean[] actVecCaracteristicas() {
-//        vecCaracteristicas = new boolean[6];
-//        if (percepciones[1]) { //X1 - Norte
-//            vecCaracteristicas[0] = true;
-//        }
-//        if (percepciones[3]) { //X2 - Este
-//            vecCaracteristicas[1] = true;
-//        }
-//        if (percepciones[5]) { //X3 - Sur
-//            vecCaracteristicas[2] = true;
-//        }
-//        if (percepciones[7]) { //X4 - Oeste
-//            vecCaracteristicas[3] = true;
-//        }
-//        if (percepciones[0] || percepciones[2] //X5 - Pattern 'x'
-//                || percepciones[4] || percepciones[6]) {
-//            vecCaracteristicas[4] = true;
-//        }
-//        if (percepciones[1] || percepciones[3] //X6 - Pattern '+'
-//                || percepciones[5] || percepciones[7]) {
-//            vecCaracteristicas[5] = true;
-//        }
+    public boolean[] reglasJuego() {
+        if (percepciones[Tablero.HEDOR]) {
+            bc.añadirRegla(posx, posy, bc.HEDOR, bc.SI, false);
+            bc.añadirRegla(posx + 1, posy, bc.MONSTRUO, bc.PUEDE, true);
+            bc.añadirRegla(posx - 1, posy, bc.MONSTRUO, bc.PUEDE, true);
+            bc.añadirRegla(posx, posy + 1, bc.MONSTRUO, bc.PUEDE, true);
+            bc.añadirRegla(posx, posy - 1, bc.MONSTRUO, bc.PUEDE, true);
+        } else {
+            bc.añadirRegla(posx, posy, bc.HEDOR, bc.NO, false);
+            bc.añadirRegla(posx + 1, posy, bc.MONSTRUO, bc.NO, false);
+            bc.añadirRegla(posx - 1, posy, bc.MONSTRUO, bc.NO, false);
+            bc.añadirRegla(posx, posy + 1, bc.MONSTRUO, bc.NO, false);
+            bc.añadirRegla(posx, posy - 1, bc.MONSTRUO, bc.NO, false);
+        }
+        if (percepciones[Tablero.BRISA]) {
+            bc.añadirRegla(posx, posy, bc.BRISA, bc.SI, false);
+            bc.añadirRegla(posx + 1, posy, bc.PRECIPICIO, bc.PUEDE, true);
+            bc.añadirRegla(posx - 1, posy, bc.PRECIPICIO, bc.PUEDE, true);
+            bc.añadirRegla(posx, posy + 1, bc.PRECIPICIO, bc.PUEDE, true);
+            bc.añadirRegla(posx, posy - 1, bc.PRECIPICIO, bc.PUEDE, true);
+        } else {
+            bc.añadirRegla(posx, posy, bc.BRISA, bc.NO, false);
+            bc.añadirRegla(posx + 1, posy, bc.PRECIPICIO, bc.NO, false);
+            bc.añadirRegla(posx - 1, posy, bc.PRECIPICIO, bc.NO, false);
+            bc.añadirRegla(posx, posy + 1, bc.PRECIPICIO, bc.NO, false);
+            bc.añadirRegla(posx, posy - 1, bc.PRECIPICIO, bc.NO, false);
+        }
+        if (percepciones[Tablero.RESPLANDOR]) {
+            bc.añadirRegla(posx, posy, bc.RESPLANDOR, bc.SI, false);
+        } else {
+            bc.añadirRegla(posx, posy, bc.RESPLANDOR, bc.NO, false);
+        }
+        bc.añadirRegla(posx, posy, bc.MONSTRUO, bc.NO, false);
+        bc.añadirRegla(posx, posy, bc.PRECIPICIO, bc.NO, false);
+        bc.consecuencias();
         return vecCaracteristicas;
     }
 
@@ -53,135 +81,89 @@ public class Agente {
         A partir del vector de caracteristicas y la accion anterior elige 
         que accion tomar.
      */
-    public ConjuntoAcciones efecAccion(Tablero tbl) {
-        ConjuntoAcciones accion = null;
-//        if (lastAccion == ConjuntoAcciones.ESTE && lastVecCaracteristicas[5]) {
-//            // Por defecto intenta continuar en la misma direccion que la anterior, 
-//            // si no puede va comprobando si puede rotar en sentido antihorario
-//            if (vecCaracteristicas[0]) {
-//                if (vecCaracteristicas[1]) {
-//                    if (vecCaracteristicas[2]) {
-//                        accion = ConjuntoAcciones.OESTE;
-//                    } else {
-//                        accion = ConjuntoAcciones.SUR;
-//                    }
-//                } else {
-//                    accion = ConjuntoAcciones.ESTE;
-//                }
-//            } else {
-//                accion = ConjuntoAcciones.NORTE;
-//            }
-//        } else if (lastAccion == ConjuntoAcciones.SUR && lastVecCaracteristicas[5]) {
-//            if (vecCaracteristicas[1]) {
-//                if (vecCaracteristicas[2]) {
-//                    if (vecCaracteristicas[3]) {
-//                        accion = ConjuntoAcciones.NORTE;
-//                    } else {
-//                        accion = ConjuntoAcciones.OESTE;
-//                    }
-//                } else {
-//                    accion = ConjuntoAcciones.SUR;
-//                }
-//            } else {
-//                accion = ConjuntoAcciones.ESTE;
-//            }
-//        } else if (lastAccion == ConjuntoAcciones.OESTE && lastVecCaracteristicas[5]) {
-//            if (vecCaracteristicas[2]) {
-//                if (vecCaracteristicas[3]) {
-//                    if (vecCaracteristicas[0]) {
-//                        accion = ConjuntoAcciones.ESTE;
-//                    } else {
-//                        accion = ConjuntoAcciones.NORTE;
-//                    }
-//                } else {
-//                    accion = ConjuntoAcciones.OESTE;
-//                }
-//            } else {
-//                accion = ConjuntoAcciones.SUR;
-//            }
-//        } else if (lastAccion == ConjuntoAcciones.NORTE && lastVecCaracteristicas[5]) {
-//            if (vecCaracteristicas[3]) {
-//                if (vecCaracteristicas[0]) {
-//                    if (vecCaracteristicas[1]) {
-//                        accion = ConjuntoAcciones.SUR;
-//                    } else {
-//                        accion = ConjuntoAcciones.ESTE;
-//                    }
-//                } else {
-//                    accion = ConjuntoAcciones.NORTE;
-//                }
-//            } else {
-//                accion = ConjuntoAcciones.OESTE;
-//            }
-//        } else if (vecCaracteristicas[5] && lastVecCaracteristicas[4] && !lastVecCaracteristicas[5]) { //"Se encarga de la accion posterior a una rotacion"
-//            // Reevalua la direccion que tiene que seguir en el caso posterior a un cambio de direccion
-//            // Por defecto intenta continuar en la misma direccion que habia tomado
-//            // Si no puede, intenta girar en sentido antihorario
-//            if (lastAccion == ConjuntoAcciones.OESTE) {
-//                if (vecCaracteristicas[3]) {
-//                    if (vecCaracteristicas[0]) {
-//                        accion = ConjuntoAcciones.ESTE;
-//                    } else {
-//                        accion = ConjuntoAcciones.NORTE;
-//                    }
-//                } else {
-//                    accion = ConjuntoAcciones.OESTE;
-//                }
-//            } else if (lastAccion == ConjuntoAcciones.ESTE) {
-//                if (vecCaracteristicas[1]) {
-//                    if (vecCaracteristicas[2]) {
-//                        accion = ConjuntoAcciones.OESTE;
-//                    } else {
-//                        accion = ConjuntoAcciones.SUR;
-//                    }
-//                } else {
-//                    accion = ConjuntoAcciones.ESTE;
-//                }
-//            } else if (lastAccion == ConjuntoAcciones.NORTE) {
-//                if (vecCaracteristicas[0]) {
-//                    if (vecCaracteristicas[1]) {
-//                        accion = ConjuntoAcciones.SUR;
-//                    } else {
-//                        accion = ConjuntoAcciones.ESTE;
-//                    }
-//                } else {
-//                    accion = ConjuntoAcciones.NORTE;
-//                }
-//            } else if (lastAccion == ConjuntoAcciones.SUR) {
-//                if (vecCaracteristicas[2]) {
-//                    if (vecCaracteristicas[3]) {
-//                        accion = ConjuntoAcciones.NORTE;
-//                    } else {
-//                        accion = ConjuntoAcciones.OESTE;
-//                    }
-//                } else {
-//                    accion = ConjuntoAcciones.SUR;
-//                }
-//            }
-//        } 
-//        else {
-//            // Accion por defecto, por defecto el agente ira norte, si no 
-//            // puede ir norte intentara girar en sentido horario
-//            if (vecCaracteristicas[5]) {
-//                if (vecCaracteristicas[0]) {
-//                    if (vecCaracteristicas[1]) {
-//                        accion = ConjuntoAcciones.SUR;
-//                    } else {
-//                        accion = ConjuntoAcciones.ESTE;
-//                    }
-//                } else if (vecCaracteristicas[1]) {
-//                    accion = ConjuntoAcciones.SUR;
-//                } else if (vecCaracteristicas[3]) {
-//                    accion = ConjuntoAcciones.NORTE;
-//                }
-//            } else {
-//                accion = ConjuntoAcciones.NORTE;
-//            }
-//        }
-//        tbl.moverPlayer(accion);
-//        lastVecCaracteristicas = vecCaracteristicas;
-//        lastAccion = accion;
-        return accion;
+    public boolean efecAccion(ConjuntoAcciones returnAccion, Tablero tbl, int x, int y) {
+        percibir(tbl);
+        for (ConjuntoAcciones acc : ConjuntoAcciones.values()) {
+            if (acc != returnAccion) {
+                try {
+                    if (auto) {
+                        Thread.sleep(150);
+                    } else {
+                        mutex.acquire();
+                    }
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(Agente.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                System.out.printf("Pre %d / %d\n", x, y);
+                System.out.println(acc);
+                switch (acc) {
+                    case NORTE:
+                        if (bc.isOk(x, y + 1)) {
+                            posx = x;
+                            posy = y + 1;
+                            System.out.printf("Post %d / %d\n", posx, posy);
+                            tbl.moverPlayer(acc);
+                            tbl.repaint();
+                            efecAccion(acc.SUR, tbl, posx, posy);
+                        } else if (!auto) {
+                            mutex.release();
+                        }
+                        break;
+                    case SUR:
+                        if (bc.isOk(x, y - 1)) {
+                            posx = x;
+                            posy = y - 1;
+                            System.out.printf("Post %d / %d\n", posx, posy);
+                            tbl.moverPlayer(acc);
+                            tbl.repaint();
+                            efecAccion(acc.NORTE, tbl, posx, posy);
+                        } else if (!auto) {
+                            mutex.release();
+                        }
+                        break;
+                    case ESTE:
+                        if (bc.isOk(x + 1, y)) {
+                            posx = x + 1;
+                            posy = y;
+                            System.out.printf("Post %d / %d\n", posx, posy);
+                            tbl.moverPlayer(acc);
+                            tbl.repaint();
+                            efecAccion(acc.OESTE, tbl, posx, posy);
+                        } else if (!auto) {
+                            mutex.release();
+                        }
+                        break;
+                    case OESTE:
+                        if (bc.isOk(x - 1, y)) {
+                            posx = x - 1;
+                            posy = y;
+                            System.out.printf("Post %d / %d\n", posx, posy);
+                            tbl.moverPlayer(acc);
+                            tbl.repaint();
+                            efecAccion(acc.ESTE, tbl, posx, posy);
+                        } else if (!auto) {
+                            mutex.release();
+                        }
+                        break;
+                }
+            }
+        }
+        if (returnAccion != null) {
+
+            tbl.moverPlayer(returnAccion);
+            tbl.repaint();
+            try {
+                if (!auto) {
+                    mutex.acquire();
+                }
+            } catch (InterruptedException ex) {
+                Logger.getLogger(Agente.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }else{
+            System.out.println("No hay mas acciones posibles.");
+        }
+
+        return true;
     }
 
     public void printPercepciones() {
@@ -211,5 +193,16 @@ public class Agente {
             }
         }
         return false;
+    }
+
+    public void nextAccion() {
+        mutex.release();
+    }
+
+    public void startStop() {
+        auto = !auto;
+        if (mutex.hasQueuedThreads()) {
+            mutex.release();
+        }
     }
 }

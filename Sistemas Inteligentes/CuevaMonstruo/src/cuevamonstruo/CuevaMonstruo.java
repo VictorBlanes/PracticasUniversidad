@@ -123,12 +123,12 @@ public class CuevaMonstruo extends JFrame implements MouseListener, KeyListener 
         });
         step.addActionListener((ActionEvent evt) -> {
             if (startEje.isSelected()) {
-                nextAccion();
+                robot.nextAccion();
             }
         });
         auto.addActionListener((ActionEvent evt) -> {
             if (startEje.isSelected()) {
-                System.out.println("Auto");
+                robot.startStop();
             }
         });
 
@@ -140,6 +140,7 @@ public class CuevaMonstruo extends JFrame implements MouseListener, KeyListener 
         this.setResizable(false);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.addKeyListener(this);
+        tablero.setPlayer(Tablero.DIMENSION - 1, 0);
     }
 
     @Override
@@ -166,6 +167,7 @@ public class CuevaMonstruo extends JFrame implements MouseListener, KeyListener 
             }
             --i;
             --j;
+            System.out.println(i + " " + j);
             //[JUGADOR, PRECIPICIO, TESORO, MONSTRUO]
             if (monstruo.isSelected()) {
                 tablero.setEspecificoEstadoCasilla(i, j, 3);
@@ -200,26 +202,16 @@ public class CuevaMonstruo extends JFrame implements MouseListener, KeyListener 
 
     @Override
     public void keyReleased(KeyEvent e) {
-        if (e.getKeyCode() == KeyEvent.VK_S) {
-            start = !start;
-        }
-        if (e.getKeyCode() == KeyEvent.VK_A) {
-            nextAccion();
-        }
     }
 
-    private static void nextAccion() {
-        robot.percibir(tablero);
-        robot.actVecCaracteristicas();
-        robot.efecAccion(tablero);
-        tablero.repaint();
+    private static void startRobot() {
+        robot.efecAccion(null, tablero, 0, 0);
     }
 
     public static void main(String[] args) {
         cm = new CuevaMonstruo();
-
-        cm.setVisible(
-                true);
+        cm.setVisible(true);
+        startRobot();
 
     }
 

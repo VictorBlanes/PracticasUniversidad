@@ -1,9 +1,10 @@
-package cuevamonstruo;
+package Agente;
 
 /**
  *
  * @author Victor Manuel Blanes Castro
  */
-public enum ConjuntoAcciones {
+public enum ConjuntoEstados {
     NORTE, ESTE, SUR, OESTE
 }
+
