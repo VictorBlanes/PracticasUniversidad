@@ -1,7 +1,6 @@
-package cuevamonstruo;
+package Agente;
 
 import IU.Tablero;
-import Agente.BaseConocimientos;
 import java.util.concurrent.Semaphore;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -13,32 +12,35 @@ import java.util.logging.Logger;
 public class Agente {
 
     private boolean[] percepciones = new boolean[4];
-    private boolean[] vecCaracteristicas = new boolean[6];
-    private boolean[] lastVecCaracteristicas = new boolean[6];
-    private ConjuntoAcciones lastAccion;
     private int posx, posy;
     private BaseConocimientos bc = new BaseConocimientos();
-    static Semaphore mutex = new Semaphore(0);
-    static boolean auto = false;
+    static Semaphore mutex = new Semaphore(0); //Barrera
+    static boolean auto = false; //Control de movimiento automatico del robot
 
     public Agente() {
         posx = 0;
         posy = 0;
     }
 
-//  [Hedor, Brisa, Resplandor, Golpe]
+    /* percibir
+        Llama a percibir de la clase Tablero que es donde se ponen las percepciones
+        Cambia de coordenadas Agente a coordendas Tablero (Ya que 0,0 esta en
+        lugares distintos y las coordenadas van diferentes)
+        Inicio tambien el ciclo que actualizara todas las reglas.
+     */
     public boolean[] percibir(Tablero tbl) {
         int i = (Tablero.DIMENSION - 1) - posy;
         int j = posx;
         percepciones = tbl.setPercepciones(i, j);
-        reglasJuego();
+        reglasJuegoActualizacion();
         return percepciones;
     }
 
-    /* actVecCaracteristicas
-        A partir de las percepciones del agente actualiza el vector de caractersiticas.
+    /* reglasJuegoActualizacion
+        A partir de las percepciones añade todas las nuevas reglas posibles y
+        actualiza antiguas, si es ncesario.
      */
-    public boolean[] reglasJuego() {
+    public void reglasJuegoActualizacion() {
         if (percepciones[Tablero.HEDOR]) {
             bc.añadirRegla(posx, posy, bc.HEDOR, bc.SI, false);
             bc.añadirRegla(posx + 1, posy, bc.MONSTRUO, bc.PUEDE, true);
@@ -73,12 +75,12 @@ public class Agente {
         bc.añadirRegla(posx, posy, bc.MONSTRUO, bc.NO, false);
         bc.añadirRegla(posx, posy, bc.PRECIPICIO, bc.NO, false);
         bc.consecuencias();
-        return vecCaracteristicas;
     }
 
     /* efecAccion
-        A partir del vector de caracteristicas y la accion anterior elige 
-        que accion tomar.
+        Proceso recursivo, el metodo ira elegiendo el movimiento mas apropiado 
+        hasta que encuentre el tesoro, si no hay tesoro el agente ira dando vueltas
+        infinitamente
      */
     public boolean efecAccion(Tablero tbl, int x, int y) {
         boolean res = false;
@@ -100,9 +102,6 @@ public class Agente {
                 } catch (InterruptedException ex) {
                     Logger.getLogger(Agente.class.getName()).log(Level.SEVERE, null, ex);
                 }
-
-//                System.out.printf("Pre %d / %d\n", x, y);
-//                System.out.println(acc);
                 switch (acc) {
                     case NORTE:
                         bc.addCostes(x, y + 1);
@@ -110,7 +109,6 @@ public class Agente {
                         if (bc.isOk(x, y + 1)) {
                             posx = x;
                             posy = y + 1;
-//                            System.out.printf("Post %d / %d\n", posx, posy);
                             tbl.moverPlayer(acc);
                             tbl.repaint();
                             res = efecAccion(tbl, posx, posy);
@@ -127,7 +125,6 @@ public class Agente {
                         if (bc.isOk(x, y - 1)) {
                             posx = x;
                             posy = y - 1;
-//                            System.out.printf("Post %d / %d\n", posx, posy);
                             tbl.moverPlayer(acc);
                             tbl.repaint();
                             res = efecAccion(tbl, posx, posy);
@@ -144,7 +141,6 @@ public class Agente {
                         if (bc.isOk(x + 1, y)) {
                             posx = x + 1;
                             posy = y;
-//                            System.out.printf("Post %d / %d\n", posx, posy);
                             tbl.moverPlayer(acc);
                             tbl.repaint();
                             res = efecAccion(tbl, posx, posy);
@@ -161,7 +157,6 @@ public class Agente {
                         if (bc.isOk(x - 1, y)) {
                             posx = x - 1;
                             posy = y;
-//                            System.out.printf("Post %d / %d\n", posx, posy);
                             tbl.moverPlayer(acc);
                             tbl.repaint();
                             res = efecAccion(tbl, posx, posy);
@@ -178,6 +173,9 @@ public class Agente {
         return false;
     }
 
+    /* printPercepciones
+        Muestra por consola las percepciones mas recientes.
+     */
     public void printPercepciones() {
         int i = 0;
         System.out.print("[");
@@ -188,29 +186,17 @@ public class Agente {
         System.out.println("]");
     }
 
-    public void printCaracteristicas(boolean[] vec) {
-        int i = 0;
-        System.out.print("[");
-        for (i = 0; i < vec.length - 1; i++) {
-            System.out.print(vec[i] + ", ");
-        }
-        System.out.print(vec[i]);
-        System.out.println("]");
-    }
-
-    private boolean contains(boolean[] b, boolean mark) {
-        for (int i = 0; i < b.length; i++) {
-            if (b[i] == mark) {
-                return true;
-            }
-        }
-        return false;
-    }
-
+    /* nextAccion
+        Da un permiso al mutex(Que usamos como barrera) que controla la ejecucion
+        del robot cuando este esta en modo Step.
+     */
     public void nextAccion() {
         mutex.release();
     }
 
+    /* startStop
+        Inicio o para la ejecucion automatica del robot. (Modo Auto)
+     */
     public void startStop() {
         auto = !auto;
         if (mutex.hasQueuedThreads()) {
@@ -218,6 +204,10 @@ public class Agente {
         }
     }
 
+    /* chooseLowest
+        Dada un array devuelve el indice donde se encuentra el valor mas bajo de
+        dicho array.
+    */
     private int chooseLowest(int[] arr) {
         int i = 0, res = -1, lowest = Integer.MAX_VALUE;
         for (i = 0; i < arr.length; i++) {
@@ -228,9 +218,14 @@ public class Agente {
         }
         return res;
     }
-    
-    public void resizeBc(int Dim){
+
+    /* resizeBc
+        Llama al metodo para cambiar el tamaño de la base de Conocimientos y pone
+        al robot en 0,0
+    */
+    public void resizeBc(int Dim) {
         bc.resizeBc(Dim);
-        posx = 0; posy = 0;
+        posx = 0;
+        posy = 0;
     }
 }

@@ -5,7 +5,6 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.geom.Rectangle2D;
-import java.awt.geom.Ellipse2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -16,6 +15,7 @@ import javax.swing.JPanel;
  *
  * @author Victor Manuel Blanes Castro
  */
+
 public class Casilla extends JPanel {
 
     private Rectangle2D.Float rec;
@@ -41,6 +41,7 @@ public class Casilla extends JPanel {
         this.estadoCasilla = ocu;
     }
 
+    @Override
     public void paintComponent(Graphics g) {
         Graphics2D g2d = (Graphics2D) g;
         g2d.setColor(col);

@@ -1,9 +1,6 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Main.java to edit this template
- */
 package cuevamonstruo;
 
+import Agente.Agente;
 import IU.Tablero;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -27,13 +24,13 @@ import javax.swing.SpinnerNumberModel;
 
 /**
  *
- * @author vicbl
+ * @author Víctor Manuel Blanes Castro
  */
+
 public class CuevaMonstruo extends JFrame implements MouseListener, KeyListener {
 
     private static CuevaMonstruo cm;
     private static Tablero tablero;
-    private static boolean start = false;
     private static final Agente robot = new Agente();
     private static JPanel opContainer, setDimension, subSetDimension, editorMode, ejecucion, subEjecucion;
     private static JLabel modDimension, edMode, ejMode;

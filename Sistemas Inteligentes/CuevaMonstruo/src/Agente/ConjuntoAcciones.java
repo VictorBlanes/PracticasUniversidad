@@ -4,7 +4,7 @@ package Agente;
  *
  * @author Victor Manuel Blanes Castro
  */
-public enum ConjuntoEstados {
+
+public enum ConjuntoAcciones {
     NORTE, ESTE, SUR, OESTE
 }
-

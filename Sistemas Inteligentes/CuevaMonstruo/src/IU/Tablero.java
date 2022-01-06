@@ -6,7 +6,7 @@ import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.geom.Rectangle2D;
 import javax.swing.JPanel;
-import cuevamonstruo.ConjuntoAcciones;
+import Agente.ConjuntoAcciones;
 
 /**
  *
@@ -22,7 +22,8 @@ public class Tablero extends JPanel {
     private static final Color NEGRO = new Color(230, 230, 230);
     private Casilla t[][];
     private boolean jugadorEnMapa = false;
-
+    
+    private static final int NUMESTADOS = 4;
     private static final int JUGADOR = 0;
     private static final int PRECIPICIO = 1;
     private static final int TESORO = 2;
@@ -48,7 +49,7 @@ public class Tablero extends JPanel {
                 } else {
                     col = NEGRO;
                 }
-                estados = new boolean[4];
+                estados = new boolean[NUMESTADOS];
                 t[i][j] = new Casilla(r, col, estados);
                 x += LADO;
             }
@@ -76,12 +77,12 @@ public class Tablero extends JPanel {
                     col = NEGRO;
                 }
                 if (i <= oldDimension && j <= oldDimension) {
-                    if (t[i][j].getEstadoCasilla()[0]) {
+                    if (t[i][j].getEstadoCasilla()[JUGADOR]) {
                         player = true;
                     }
                     t2[i][j] = new Casilla(r, col, t[i][j].getEstadoCasilla());
                 } else {
-                    estados = new boolean[4];
+                    estados = new boolean[NUMESTADOS];
                     t2[i][j] = new Casilla(r, col, estados);
                 }
                 x += LADO;
@@ -110,18 +111,12 @@ public class Tablero extends JPanel {
         return t[i][j].getRec().contains(x, y);
     }
 
-    public boolean estaOcupado(int i, int j) {
-        return t[i][j].getEstadoCasilla()[0];
-    }
-
     public void setPlayer(int i, int j) {
-        boolean[] estado = {false, false, false, false};
         if (!contains(t[i][j].getEstadoCasilla(), true) && !jugadorEnMapa) {
-            estado[0] = true;
-            t[i][j].setEspecificoEstadoCasilla(true, 0);
+            t[i][j].setEspecificoEstadoCasilla(true, JUGADOR);
             jugadorEnMapa = true;
-        } else if (t[i][j].getEstadoCasilla()[0]) {
-            t[i][j].setEspecificoEstadoCasilla(false, 0);
+        } else if (t[i][j].getEstadoCasilla()[JUGADOR]) {
+            t[i][j].setEspecificoEstadoCasilla(false, JUGADOR);
             jugadorEnMapa = false;
         }
     }
@@ -131,35 +126,35 @@ public class Tablero extends JPanel {
         int i = 0, j = 0;
         for (i = 0; i < Tablero.DIMENSION && !encontrado; i++) {
             for (j = 0; j < Tablero.DIMENSION && !encontrado; j++) {
-                encontrado = t[i][j].getEstadoCasilla()[0];
+                encontrado = t[i][j].getEstadoCasilla()[JUGADOR];
             }
         }
         if (encontrado) {
-            t[--i][--j].setEspecificoEstadoCasilla(false, 0);
+            t[--i][--j].setEspecificoEstadoCasilla(false, JUGADOR);
             switch (accion) {
                 case NORTE ->
-                    t[--i][j].setEspecificoEstadoCasilla(true, 0);
+                    t[--i][j].setEspecificoEstadoCasilla(true, JUGADOR);
                 case SUR ->
-                    t[++i][j].setEspecificoEstadoCasilla(true, 0);
+                    t[++i][j].setEspecificoEstadoCasilla(true, JUGADOR);
                 case ESTE ->
-                    t[i][++j].setEspecificoEstadoCasilla(true, 0);
+                    t[i][++j].setEspecificoEstadoCasilla(true, JUGADOR);
                 case OESTE ->
-                    t[i][--j].setEspecificoEstadoCasilla(true, 0);
+                    t[i][--j].setEspecificoEstadoCasilla(true, JUGADOR);
             }
         }
     }
-    
+
     public void moverPlayer(int x, int y) {
         boolean encontrado = false;
         int i = 0, j = 0;
         for (i = 0; i < Tablero.DIMENSION && !encontrado; i++) {
             for (j = 0; j < Tablero.DIMENSION && !encontrado; j++) {
-                encontrado = t[i][j].getEstadoCasilla()[0];
+                encontrado = t[i][j].getEstadoCasilla()[JUGADOR];
             }
         }
-        if(encontrado){
-            t[--i][--j].setEspecificoEstadoCasilla(false, 0);
-            t[x][y].setEspecificoEstadoCasilla(true, 0);
+        if (encontrado) {
+            t[--i][--j].setEspecificoEstadoCasilla(false, JUGADOR);
+            t[x][y].setEspecificoEstadoCasilla(true, JUGADOR);
         }
     }
 
