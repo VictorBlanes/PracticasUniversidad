@@ -15,7 +15,7 @@ public class BaseConocimientos {
     public static final int RESPLANDOR = 2;
     public static final int HEDOR = 3;
     public static final int BRISA = 4;
-
+    public static final int GOLPE = 5;
     //Valores de un estado de una casilla
     public static final int NO_INFO = 0;
     public static final int NO = 1;
@@ -24,6 +24,7 @@ public class BaseConocimientos {
 
     int[][][] bC = new int[Tablero.DIMENSION][Tablero.DIMENSION][5];
     int[][] costes = new int[Tablero.DIMENSION][Tablero.DIMENSION];
+    boolean[][][] paredes = new boolean[Tablero.DIMENSION][Tablero.DIMENSION][4];
     private Stack pilaAct = new Stack();
 
     /* añadirRegla
@@ -34,7 +35,9 @@ public class BaseConocimientos {
      */
     public void añadirRegla(int posx, int posy, int regla, int value, boolean check) {
         if (inBounds(posx, posy)) {
-            if (!(value == PUEDE && (bC[posx][posy][regla] == SI || bC[posx][posy][regla] == NO))) {
+            if (regla == GOLPE) {
+                paredes[posx][posy][value] = true;
+            } else if (!(value == PUEDE && (bC[posx][posy][regla] == SI || bC[posx][posy][regla] == NO))) {
                 bC[posx][posy][regla] = value;
                 if (check) {
                     pilaAct.push(posx);
@@ -164,8 +167,24 @@ public class BaseConocimientos {
     /* isOk
         Devuelve true si es seguro moverse a esa casilla.
      */
-    public boolean isOk(int posx, int posy) {
-        boolean res = (inBounds(posx, posy) && bC[posx][posy][MONSTRUO] == NO && bC[posx][posy][PRECIPICIO] == NO);
+    public boolean isOk(int posx, int posy, int direccion) {
+        boolean res = false;
+        if (!paredes[posx][posy][direccion]) {
+            switch (direccion) {
+                case 0:
+                    res = (bC[posx][posy + 1][MONSTRUO] == NO && bC[posx][posy + 1][PRECIPICIO] == NO);
+                    break;
+                case 1:
+                    res = (bC[posx + 1][posy][MONSTRUO] == NO && bC[posx + 1][posy][PRECIPICIO] == NO);
+                    break;
+                case 2:
+                    res = (bC[posx][posy - 1][MONSTRUO] == NO && bC[posx][posy - 1][PRECIPICIO] == NO);
+                    break;
+                case 3:
+                    res = (bC[posx - 1][posy][MONSTRUO] == NO && bC[posx - 1][posy][PRECIPICIO] == NO);
+                    break;
+            }
+        }
         return res;
     }
 
@@ -217,7 +236,7 @@ public class BaseConocimientos {
         bC = bC2;
         costes = costes2;
     }
-    
+
     /* resizeBc
        Comprueba si hay un monstruo en la misma fila o columna a la posicion actual
         si lo hay lo mata y da las coordenadas del monstruo, si no devuelve -1, -1

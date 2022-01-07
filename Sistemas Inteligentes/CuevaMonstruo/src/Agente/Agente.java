@@ -17,7 +17,11 @@ public class Agente {
     private static Semaphore mutex = new Semaphore(0); //Barrera
     private static boolean auto = false; //Control de movimiento automatico del robot
     private int num_flechas;
-
+    private final int NORTE = 0;
+    private final int ESTE = 1;
+    private final int SUR = 2;
+    private final int OESTE = 3;
+    
     public Agente() {
         posx = 0;
         posy = 0;
@@ -73,6 +77,20 @@ public class Agente {
         } else {
             bc.añadirRegla(posx, posy, bc.RESPLANDOR, bc.NO, false);
         }
+        if(percepciones[Tablero.GOLPE]){
+            if(posx == 0){
+                bc.añadirRegla(posx, posy, bc.GOLPE, OESTE, false);
+            }
+            if(posx == Tablero.DIMENSION - 1){
+                bc.añadirRegla(posx, posy, bc.GOLPE, ESTE, false);
+            }
+            if(posy == 0){
+                bc.añadirRegla(posx, posy, bc.GOLPE, SUR, false);
+            }
+            if(posy == Tablero.DIMENSION - 1){
+                bc.añadirRegla(posx, posy, bc.GOLPE, NORTE, false);
+            }
+        }
         bc.añadirRegla(posx, posy, bc.MONSTRUO, bc.NO, false);
         bc.añadirRegla(posx, posy, bc.PRECIPICIO, bc.NO, false);
         bc.consecuencias();
@@ -117,7 +135,7 @@ public class Agente {
                         case NORTE:
                             bc.addCostes(x, y + 1);
                             costes[iacc] = Integer.MAX_VALUE;
-                            if (bc.isOk(x, y + 1)) {
+                            if (bc.isOk(x, y, 0)) {
                                 posx = x;
                                 posy = y + 1;
                                 tbl.moverPlayer(acc);
@@ -133,7 +151,7 @@ public class Agente {
                         case SUR:
                             bc.addCostes(x, y - 1);
                             costes[iacc] = Integer.MAX_VALUE;
-                            if (bc.isOk(x, y - 1)) {
+                            if (bc.isOk(x, y, 2)) {
                                 posx = x;
                                 posy = y - 1;
                                 tbl.moverPlayer(acc);
@@ -149,7 +167,7 @@ public class Agente {
                         case ESTE:
                             bc.addCostes(x + 1, y);
                             costes[iacc] = Integer.MAX_VALUE;
-                            if (bc.isOk(x + 1, y)) {
+                            if (bc.isOk(x, y, 1)) {
                                 posx = x + 1;
                                 posy = y;
                                 tbl.moverPlayer(acc);
@@ -165,7 +183,7 @@ public class Agente {
                         case OESTE:
                             bc.addCostes(x - 1, y);
                             costes[iacc] = Integer.MAX_VALUE;
-                            if (bc.isOk(x - 1, y)) {
+                            if (bc.isOk(x, y, 3)) {
                                 posx = x - 1;
                                 posy = y;
                                 tbl.moverPlayer(acc);
