@@ -225,14 +225,19 @@ public class BaseConocimientos {
         int oldDimension = bC.length - 1;
         int[][][] bC2 = new int[dim][dim][5];
         int[][] costes2 = new int[dim][dim];
+        boolean[][][] paredes2 = new boolean[dim][dim][4];
         for (int i = 0; i < dim; i++) {
             for (int j = 0; j < dim; j++) {
                 if (i <= oldDimension && j <= oldDimension) {
+                    if(!(i == oldDimension || j == oldDimension)){
+                        paredes2[i][j] = paredes[i][j];
+                    }
                     bC2[i][j] = bC[i][j];
                     costes2[i][j] = costes[i][j];
                 }
             }
         }
+        paredes = paredes2;
         bC = bC2;
         costes = costes2;
     }
