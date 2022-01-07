@@ -14,8 +14,8 @@ public class Agente {
     private boolean[] percepciones = new boolean[4];
     private int posx, posy;
     private BaseConocimientos bc = new BaseConocimientos();
-    static Semaphore mutex = new Semaphore(0); //Barrera
-    static boolean auto = false; //Control de movimiento automatico del robot
+    private static Semaphore mutex = new Semaphore(0); //Barrera
+    private static boolean auto = false; //Control de movimiento automatico del robot
     private int num_flechas;
 
     public Agente() {
@@ -109,6 +109,7 @@ public class Agente {
                     int posx = (Tablero.DIMENSION - 1) - resMon[1];
                     int posy = resMon[0];
                     tbl.setEspecificoEstadoCasilla(posx, posy, 3);
+                    num_flechas--;
                     tbl.repaint();
                     i--;
                 } else {
@@ -205,13 +206,17 @@ public class Agente {
         mutex.release();
     }
 
-    /* startStop
-        Inicio o para la ejecucion automatica del robot. (Modo Auto)
+    /* checkDisparo
+        Llama al metodo para comprobar si desde esa posicion se puede disparar y 
+        matar a un monstruo,si se puede da lar coordenadas del monstruo, si no da -1,-1
      */
     private int[] checkDisparo(int x, int y) {
         return bc.matarMonstruo(x, y);
     }
 
+    /* startStop
+        Inicio o para la ejecucion automatica del robot. (Modo Auto)
+     */
     public void startStop() {
         auto = !auto;
         if (mutex.hasQueuedThreads()) {
@@ -244,6 +249,9 @@ public class Agente {
         posy = 0;
     }
 
+    /* setFlechas
+        Setter de num_flechas
+     */
     public void setFlechas(int flechas) {
         this.num_flechas = flechas;
     }

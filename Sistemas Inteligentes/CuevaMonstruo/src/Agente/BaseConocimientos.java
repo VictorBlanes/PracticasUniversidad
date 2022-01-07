@@ -217,7 +217,11 @@ public class BaseConocimientos {
         bC = bC2;
         costes = costes2;
     }
-
+    
+    /* resizeBc
+       Comprueba si hay un monstruo en la misma fila o columna a la posicion actual
+        si lo hay lo mata y da las coordenadas del monstruo, si no devuelve -1, -1
+     */
     public int[] matarMonstruo(int posx, int posy) {
         int[] res = new int[2];
         for (int i = 0; i < bC.length; i++) {

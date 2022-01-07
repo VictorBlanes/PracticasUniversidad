@@ -58,6 +58,11 @@ public class Tablero extends JPanel {
         }
     }
 
+    /* resizeArray
+        Cambia el tamaño del array(El tablero) al las dimensiones especificadas
+        manteniendo todos los datos que habia en el anterior tablero, se agranda
+        por la derecha y por abajo.
+     */
     public void resizeArray(int dim) {
         //[JUGADOR, PRECIPICIO, TESORO, MONSTRUO]
         boolean[] estados;
@@ -94,6 +99,9 @@ public class Tablero extends JPanel {
         jugadorEnMapa = player;
     }
 
+    /* paintComponent
+        Llama a cada paintComponent de cada casilla del tablero
+     */
     @Override
     public void paintComponent(Graphics g) {
         for (int i = 0; i < DIMENSION; i++) {
@@ -103,15 +111,25 @@ public class Tablero extends JPanel {
         }
     }
 
+    /* getPreferredSize
+        Devuelve las dimensions del tablero
+     */
     @Override
     public Dimension getPreferredSize() {
         return new Dimension(MAXIMO, MAXIMO);
     }
 
+    /* esCasilla
+        Comprueba si el pixel de la posicion x,y esta dentro de la casilla
+        i,j
+     */
     public boolean esCasilla(int i, int j, int x, int y) {
         return t[i][j].getRec().contains(x, y);
     }
 
+    /* setPlayer
+        Quita o coloca al jugador en la posicion i,j
+     */
     public void setPlayer(int i, int j) {
         if (!contains(t[i][j].getEstadoCasilla(), true) && !jugadorEnMapa) {
             t[i][j].setEspecificoEstadoCasilla(true, JUGADOR);
@@ -122,6 +140,9 @@ public class Tablero extends JPanel {
         }
     }
 
+    /* moverPlayer
+        Mueve al jugador una casilla en al direccion especificada
+     */
     public void moverPlayer(ConjuntoAcciones accion) {
         boolean encontrado = false;
         int i = 0, j = 0;
@@ -145,6 +166,9 @@ public class Tablero extends JPanel {
         }
     }
 
+    /* moverPlayer
+        Mueve al jugador a la posicion especificada
+     */
     public void moverPlayer(int x, int y) {
         boolean encontrado = false;
         int i = 0, j = 0;
@@ -159,10 +183,16 @@ public class Tablero extends JPanel {
         }
     }
 
+    /* getRectangle
+        Devuelve el Rectangle2D de la casilla especificada
+     */
     public Rectangle getRectangle(int i, int j) {
         return t[i][j].getRec().getBounds();
-    }
-
+    } 
+    
+    /* setPercepciones
+        Devuelve las percepciones del robot en la posicion especificada
+     */
     public boolean[] setPercepciones(int posx, int posy) {
         boolean[] percepciones = new boolean[4];
         if (posx == 0 || posy == 0 || posx == (DIMENSION - 1) || posy == (DIMENSION - 1)) {
@@ -185,7 +215,10 @@ public class Tablero extends JPanel {
         }
         return percepciones;
     }
-
+    
+    /* contains
+        Dado un array comprueba si el array al menos tiene un valor mark.
+     */
     private boolean contains(boolean[] b, boolean mark) {
         for (int i = 0; i < b.length; i++) {
             if (b[i] == mark) {
@@ -195,6 +228,10 @@ public class Tablero extends JPanel {
         return false;
     }
 
+    /* setEspecificoEstadoCasilla
+        Quita o pone el objeto especificado por index en la posicion i,j.
+        Tambien controla el numero de monstruos que hay en el mapa.
+     */
     public void setEspecificoEstadoCasilla(int i, int j, int index) {
         boolean[] estado = new boolean[4];
         if (t[i][j].getEstadoCasilla()[MONSTRUO]) {
@@ -205,7 +242,10 @@ public class Tablero extends JPanel {
         estado[index] = !t[i][j].getEstadoCasilla()[index];
         t[i][j].setEstadoCasilla(estado);
     }
-
+    
+    /* getNum_monstruos
+        Getter de num.monstruos
+     */
     public int getNum_monstruos() {
         return num_monstruos;
     }
