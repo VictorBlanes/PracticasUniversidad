@@ -41,7 +41,8 @@ public class BaseConocimientos {
                     pilaAct.push(posy);
                     pilaAct.push(regla);
                 }
-            } else if (regla == MONSTRUO && value == NO) {
+            }
+            if (regla == MONSTRUO && value == NO) {
                 if (inBounds(posx - 1, posy) && bC[posx - 1][posy][HEDOR] == SI) {
                     pilaAct.push(posx - 1);
                     pilaAct.push(posy);
@@ -120,6 +121,13 @@ public class BaseConocimientos {
                             && (inBounds(posx, posy - 1) && bC[posx][posy - 1][MONSTRUO] == NO)
                             && (inBounds(posx, posy + 1) && bC[posx][posy + 1][MONSTRUO] == PUEDE)) {
                         añadirRegla(posx, posy + 1, MONSTRUO, SI, false);
+                    }
+
+                    if ((inBounds(posx - 1, posy) && bC[posx - 1][posy][MONSTRUO] == NO)
+                            && (inBounds(posx + 1, posy) && bC[posx + 1][posy][MONSTRUO] == NO)
+                            && (inBounds(posx, posy - 1) && bC[posx][posy - 1][MONSTRUO] == NO)
+                            && (inBounds(posx, posy + 1) && bC[posx][posy + 1][MONSTRUO] == NO)) {
+                        añadirRegla(posx, posy, HEDOR, NO, false);
                     }
                     break;
                 case BRISA:
@@ -208,5 +216,30 @@ public class BaseConocimientos {
         }
         bC = bC2;
         costes = costes2;
+    }
+
+    public int[] matarMonstruo(int posx, int posy) {
+        int[] res = new int[2];
+        for (int i = 0; i < bC.length; i++) {
+            if (bC[i][posy][MONSTRUO] == SI) {
+                añadirRegla(i, posy, MONSTRUO, NO, false);
+                res[0] = i;
+                res[1] = posy;
+                return res;
+            }
+        }
+        for (int j = 0;
+                j < bC.length;
+                j++) {
+            if (bC[posx][j][MONSTRUO] == SI) {
+                añadirRegla(posx, j, MONSTRUO, NO, false);
+                res[0] = posx;
+                res[1] = j;
+                return res;
+            }
+        }
+        res[0] = -1;
+        res[1] = -1;
+        return res;
     }
 }

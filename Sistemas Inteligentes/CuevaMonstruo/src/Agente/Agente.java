@@ -16,6 +16,7 @@ public class Agente {
     private BaseConocimientos bc = new BaseConocimientos();
     static Semaphore mutex = new Semaphore(0); //Barrera
     static boolean auto = false; //Control de movimiento automatico del robot
+    private int num_flechas;
 
     public Agente() {
         posx = 0;
@@ -102,71 +103,81 @@ public class Agente {
                 } catch (InterruptedException ex) {
                     Logger.getLogger(Agente.class.getName()).log(Level.SEVERE, null, ex);
                 }
-                switch (acc) {
-                    case NORTE:
-                        bc.addCostes(x, y + 1);
-                        costes[iacc] = Integer.MAX_VALUE;
-                        if (bc.isOk(x, y + 1)) {
-                            posx = x;
-                            posy = y + 1;
-                            tbl.moverPlayer(acc);
-                            tbl.repaint();
-                            res = efecAccion(tbl, posx, posy);
-                            if (res) {
-                                return true;
+                int[] resMon = checkDisparo(x, y);
+                if (resMon[0] != -1) {
+                    percibir(tbl);
+                    int posx = (Tablero.DIMENSION - 1) - resMon[1];
+                    int posy = resMon[0];
+                    tbl.setEspecificoEstadoCasilla(posx, posy, 3);
+                    tbl.repaint();
+                    i--;
+                } else {
+                    switch (acc) {
+                        case NORTE:
+                            bc.addCostes(x, y + 1);
+                            costes[iacc] = Integer.MAX_VALUE;
+                            if (bc.isOk(x, y + 1)) {
+                                posx = x;
+                                posy = y + 1;
+                                tbl.moverPlayer(acc);
+                                tbl.repaint();
+                                res = efecAccion(tbl, posx, posy);
+                                if (res) {
+                                    return true;
+                                }
+                            } else if (!auto) {
+                                mutex.release();
                             }
-                        } else if (!auto) {
-                            mutex.release();
-                        }
-                        break;
-                    case SUR:
-                        bc.addCostes(x, y - 1);
-                        costes[iacc] = Integer.MAX_VALUE;
-                        if (bc.isOk(x, y - 1)) {
-                            posx = x;
-                            posy = y - 1;
-                            tbl.moverPlayer(acc);
-                            tbl.repaint();
-                            res = efecAccion(tbl, posx, posy);
-                            if (res) {
-                                return true;
+                            break;
+                        case SUR:
+                            bc.addCostes(x, y - 1);
+                            costes[iacc] = Integer.MAX_VALUE;
+                            if (bc.isOk(x, y - 1)) {
+                                posx = x;
+                                posy = y - 1;
+                                tbl.moverPlayer(acc);
+                                tbl.repaint();
+                                res = efecAccion(tbl, posx, posy);
+                                if (res) {
+                                    return true;
+                                }
+                            } else if (!auto) {
+                                mutex.release();
                             }
-                        } else if (!auto) {
-                            mutex.release();
-                        }
-                        break;
-                    case ESTE:
-                        bc.addCostes(x + 1, y);
-                        costes[iacc] = Integer.MAX_VALUE;
-                        if (bc.isOk(x + 1, y)) {
-                            posx = x + 1;
-                            posy = y;
-                            tbl.moverPlayer(acc);
-                            tbl.repaint();
-                            res = efecAccion(tbl, posx, posy);
-                            if (res) {
-                                return true;
+                            break;
+                        case ESTE:
+                            bc.addCostes(x + 1, y);
+                            costes[iacc] = Integer.MAX_VALUE;
+                            if (bc.isOk(x + 1, y)) {
+                                posx = x + 1;
+                                posy = y;
+                                tbl.moverPlayer(acc);
+                                tbl.repaint();
+                                res = efecAccion(tbl, posx, posy);
+                                if (res) {
+                                    return true;
+                                }
+                            } else if (!auto) {
+                                mutex.release();
                             }
-                        } else if (!auto) {
-                            mutex.release();
-                        }
-                        break;
-                    case OESTE:
-                        bc.addCostes(x - 1, y);
-                        costes[iacc] = Integer.MAX_VALUE;
-                        if (bc.isOk(x - 1, y)) {
-                            posx = x - 1;
-                            posy = y;
-                            tbl.moverPlayer(acc);
-                            tbl.repaint();
-                            res = efecAccion(tbl, posx, posy);
-                            if (res) {
-                                return true;
+                            break;
+                        case OESTE:
+                            bc.addCostes(x - 1, y);
+                            costes[iacc] = Integer.MAX_VALUE;
+                            if (bc.isOk(x - 1, y)) {
+                                posx = x - 1;
+                                posy = y;
+                                tbl.moverPlayer(acc);
+                                tbl.repaint();
+                                res = efecAccion(tbl, posx, posy);
+                                if (res) {
+                                    return true;
+                                }
+                            } else if (!auto) {
+                                mutex.release();
                             }
-                        } else if (!auto) {
-                            mutex.release();
-                        }
-                        break;
+                            break;
+                    }
                 }
             }
         }
@@ -197,6 +208,10 @@ public class Agente {
     /* startStop
         Inicio o para la ejecucion automatica del robot. (Modo Auto)
      */
+    private int[] checkDisparo(int x, int y) {
+        return bc.matarMonstruo(x, y);
+    }
+
     public void startStop() {
         auto = !auto;
         if (mutex.hasQueuedThreads()) {
@@ -207,7 +222,7 @@ public class Agente {
     /* chooseLowest
         Dada un array devuelve el indice donde se encuentra el valor mas bajo de
         dicho array.
-    */
+     */
     private int chooseLowest(int[] arr) {
         int i = 0, res = -1, lowest = Integer.MAX_VALUE;
         for (i = 0; i < arr.length; i++) {
@@ -222,10 +237,14 @@ public class Agente {
     /* resizeBc
         Llama al metodo para cambiar el tamaño de la base de Conocimientos y pone
         al robot en 0,0
-    */
+     */
     public void resizeBc(int Dim) {
         bc.resizeBc(Dim);
         posx = 0;
         posy = 0;
+    }
+
+    public void setFlechas(int flechas) {
+        this.num_flechas = flechas;
     }
 }

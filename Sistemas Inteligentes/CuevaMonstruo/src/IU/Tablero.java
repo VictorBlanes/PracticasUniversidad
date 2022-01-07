@@ -22,7 +22,8 @@ public class Tablero extends JPanel {
     private static final Color NEGRO = new Color(230, 230, 230);
     private Casilla t[][];
     private boolean jugadorEnMapa = false;
-    
+
+    private static int num_monstruos = 0;
     private static final int NUMESTADOS = 4;
     private static final int JUGADOR = 0;
     private static final int PRECIPICIO = 1;
@@ -196,7 +197,16 @@ public class Tablero extends JPanel {
 
     public void setEspecificoEstadoCasilla(int i, int j, int index) {
         boolean[] estado = new boolean[4];
+        if (t[i][j].getEstadoCasilla()[MONSTRUO]) {
+            num_monstruos--;
+        } else if (index == MONSTRUO) {
+            num_monstruos++;
+        }
         estado[index] = !t[i][j].getEstadoCasilla()[index];
         t[i][j].setEstadoCasilla(estado);
+    }
+
+    public int getNum_monstruos() {
+        return num_monstruos;
     }
 }

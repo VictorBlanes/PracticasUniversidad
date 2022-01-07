@@ -169,6 +169,7 @@ public class CuevaMonstruo extends JFrame implements MouseListener, KeyListener 
             //[JUGADOR, PRECIPICIO, TESORO, MONSTRUO]
             if (monstruo.isSelected()) {
                 tablero.setEspecificoEstadoCasilla(i, j, 3);
+                robot.setFlechas(tablero.getNum_monstruos());
             } else if (tesoro.isSelected()) {
                 tablero.setEspecificoEstadoCasilla(i, j, 2);
             } else if (precipicio.isSelected()) {
