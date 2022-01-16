@@ -6,6 +6,7 @@
  * mujeres en el baño al mismo tiempo. Se tiene que simular el acceso al baño 
  * mediante semaforos.
  * 
+ * Link video: https://youtu.be/PcWScvuMuVw
  * @author Victor Manuel Blanes Castro
  */
 package practica1progconcurrente;
@@ -21,7 +22,7 @@ public class Practica1ProgConcurrente implements Runnable {
     static final int MAX_GENTE_BANYO = 3; //Aforo maximo del baño
     static volatile int enBaño = 0;
     
-    //Si hay hombre o mujeres en el baño en el momento, Ninguno si no hay nadie
+    //Si hay hombre o mujeres en el baño en el momento, Ninguno si no hay nadie.
     static volatile HombreMujer estadoBaño = HombreMujer.Ninguno;
     
 
