@@ -1,8 +1,14 @@
+/* Practica 3 programacion concurrente
+ * Simulacion del problema del oso de las abejas con RabbitMq y Go, en el jarron puede caber 10 unidades de miel y el oso come 3 veces de el.
+ * La simulacion tiene que funcionar tanto para 3 como 3000 abejas.
+ *
+ * Link video: https://youtu.be/ddeCWTyAurQ
+ * Autor: Victor Manuel Blanes Castro
+ */
 package main
 
 import (
 	"log"
-	"os"
 	"strconv"
 	"strings"
 	"time"
@@ -13,23 +19,10 @@ import (
 const CAP_POT = 10
 const MAX_ITER = 3
 
-type messageData struct {
-}
-
 func failOnError(err error, msg string) {
 	if err != nil {
 		log.Fatalf("%s: %s", msg, err)
 	}
-}
-
-func bodyFrom(args []string) string {
-	var s string
-	if (len(args) < 2) || os.Args[1] == "" {
-		s = "hello"
-	} else {
-		s = strings.Join(args[1:], " ")
-	}
-	return s
 }
 
 func main() {
@@ -41,6 +34,7 @@ func main() {
 	failOnError(err, "Failed to open a channel")
 	defer ch.Close()
 
+	// Queue donde se ponen los permisos para producir miel, los pone el oso y los recoge las abejas
 	q1, err := ch.QueueDeclare(
 		"osoAbeja", // name
 		false,      // durable (the queue will survive a broker restart)
@@ -51,6 +45,7 @@ func main() {
 	)
 	failOnError(err, "Failed to declare a queue")
 
+	// Queue en donde la abeja encargada pondra el wake para despertar al oso cuando el jarron este lleno.
 	q2, err := ch.QueueDeclare(
 		"abejaOso", // name
 		false,      // durable (the queue will survive a broker restart)
@@ -60,46 +55,6 @@ func main() {
 		nil,        // arguments (Those are provided by clients when they declare queues (exchanges) and control various optional features, such as queue length limit or TTL.)
 	)
 	failOnError(err, "Failed to declare a queue")
-
-	err = ch.ExchangeDeclare(
-		"fin",    // name
-		"fanout", // type
-		false,    // durable
-		true,     // auto-deleted
-		false,    // internal
-		false,    // no-wait
-		nil,      // arguments
-	)
-	failOnError(err, "Failed to declare an exchange")
-
-	err = ch.ExchangeDeclare(
-		"direct", // name
-		"direct", // type
-		false,    // durable
-		true,     // auto-deleted
-		false,    // internal
-		false,    // no-wait
-		nil,      // arguments
-	)
-	failOnError(err, "Failed to declare an exchange")
-
-	err = ch.QueueBind(
-		q2.Name,  // queue name
-		q2.Name,  // routing key
-		"direct", // exchange
-		false,
-		nil,
-	)
-	failOnError(err, "Failed to bind a queue")
-
-	err = ch.QueueBind(
-		q1.Name,  // queue name
-		q1.Name,  // routing key
-		"direct", // exchange
-		false,
-		nil,
-	)
-	failOnError(err, "Failed to bind a queue")
 
 	msgs2, err := ch.Consume(
 		q2.Name, // queue
@@ -112,6 +67,7 @@ func main() {
 	)
 	failOnError(err, "Failed to register a consumer")
 
+	//Se envia un mensaje inicial para el oso envie los 10 primeros permisos.
 	body := "Start"
 	err = ch.Publish(
 		"",      // exchange
@@ -126,6 +82,8 @@ func main() {
 	)
 	failOnError(err, "Failed to publish a message")
 
+	// Goroutine que se encarga de leer el mensaje de wake para que el oso envie los permisos para hacer miel.
+	// Ademas cuando el oso haya comido del jarron MAX_ITER veces enviara el mensaje para finalizar la simulacion.
 	forever := make(chan bool)
 	go func() {
 		ind := 0

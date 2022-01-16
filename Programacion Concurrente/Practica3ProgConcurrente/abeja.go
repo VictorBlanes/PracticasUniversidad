@@ -1,3 +1,10 @@
+/* Practica 3 programacion concurrente
+ * Simulacion del problema del oso de las abejas con RabbitMq y Go, en el jarron puede caber 10 unidades de miel y el oso come 3 veces de el.
+ * La simulacion tiene que funcionar tanto para 3 como 3000 abejas.
+ *
+ * Link video: https://youtu.be/ddeCWTyAurQ
+ * Autor: Victor Manuel Blanes Castro
+ */
 package main
 
 import (
@@ -28,6 +35,7 @@ func main() {
 	failOnError(err, "Failed to open a channel")
 	defer ch.Close()
 
+	// Queue donde se ponen los permisos para producir miel, los pone el oso y los recoge las abejas
 	q1, err := ch.QueueDeclare(
 		"osoAbeja", // name
 		false,      // durable (the queue will survive a broker restart)
@@ -38,6 +46,7 @@ func main() {
 	)
 	failOnError(err, "Failed to declare a queue")
 
+	// Queue en donde la abeja encargada pondra el wake para despertar al oso cuando el jarron este lleno.
 	q2, err := ch.QueueDeclare(
 		"abejaOso", // name
 		false,      // durable (the queue will survive a broker restart)
@@ -48,6 +57,7 @@ func main() {
 	)
 	failOnError(err, "Failed to declare a queue")
 
+	// Queue unico para cada abeja, en esta queue el oso pondra el mensaje para acabar la simulacion.
 	q3, err := ch.QueueDeclare(
 		"",    // name
 		false, // durable (the queue will survive a broker restart)
@@ -58,6 +68,7 @@ func main() {
 	)
 	failOnError(err, "Failed to declare a queue")
 
+	// Exchange fanout, se usa para que el oso envie el mensaje a todas las abejas para acabar la simulacion
 	err = ch.ExchangeDeclare(
 		"fin",    // name
 		"fanout", // type
@@ -69,6 +80,7 @@ func main() {
 	)
 	failOnError(err, "Failed to declare an exchange")
 
+	//Exchange direct se usa para que el oso envie permisos que las abejas recogeras o para que la abeja despierte al oso.
 	err = ch.ExchangeDeclare(
 		"direct", // name
 		"direct", // type
@@ -80,6 +92,7 @@ func main() {
 	)
 	failOnError(err, "Failed to declare an exchange")
 
+	// Se conecta la cola 3(Donde el oso enviara el mensaje de finalizacion) y el exchange fanout.
 	err = ch.QueueBind(
 		q3.Name, // queue name
 		"",      // routing key
@@ -89,6 +102,7 @@ func main() {
 	)
 	failOnError(err, "Failed to bind a queue")
 
+	// Se conecta la cola 2 (Donde la abeja envia el wake al oso) y el exchange direct
 	err = ch.QueueBind(
 		q2.Name,  // queue name
 		q2.Name,  // routing key
@@ -98,6 +112,7 @@ func main() {
 	)
 	failOnError(err, "Failed to bind a queue")
 
+	// Se conecta la cola 1 (Donde el oso envia los permisos para crear miel) y el exchange direct
 	err = ch.QueueBind(
 		q1.Name,  // queue name
 		q1.Name,  // routing key
@@ -107,10 +122,11 @@ func main() {
 	)
 	failOnError(err, "Failed to bind a queue")
 
+	// Usado para que si una abeja muere procesando un mensaje se envie a otra.
 	err = ch.Qos(
-		1,
-		0,
-		false,
+		1,     //Prefetch count
+		0,     //Prefetch size
+		false, // Globar
 	)
 
 	msgs1, err := ch.Consume(
@@ -137,6 +153,8 @@ func main() {
 
 	forever := make(chan bool)
 
+	// Goroutine que se encarga de leer los mensajes del canal 1 (Donde el oso pone los permisos).
+	// Ademas, tambien se enviara el mensaje de wake si el jarron esta lleno.
 	go func() {
 		var ABEJA_NAME = os.Args[1]
 		for d := range msgs1 {
@@ -145,7 +163,7 @@ func main() {
 			t := time.Duration(3)
 			log.Printf(". . .")
 			time.Sleep(t * time.Second)
-			d.Ack(false)
+			d.Ack(false) // Si una abeja muere mientras se procesa un mensaje el mensaje no se pierda y se envia a otra abeja para procesar
 			if value == CAP_POT {
 				log.Printf("%s despierta al oso", ABEJA_NAME)
 				body := "Wake " + ABEJA_NAME
@@ -165,6 +183,8 @@ func main() {
 		}
 	}()
 
+	// Goroutine que se encarga de leer los mensajes del canal 3 (Done el oso pone el mensaje para finalizar procesos),
+	// lo unico que hace en finalizar el programa si recibe un mensaje.
 	go func() {
 		for range msgs2 {
 			log.Printf("El jarron esta roto, no se puede llenar de miel!")
