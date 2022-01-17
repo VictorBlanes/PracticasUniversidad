@@ -1,18 +1,18 @@
 [GENERATED OBJECT FILE]
 b__main.o
 [PROJECT FILES]
-C:\Users\vicbl\Desktop\Practica2CompConcurrente\practica2.gpr
-20220109030752 f5f806bba0d1988d3ffece42ba2f0fa1
+C:\Users\vicbl\Documents\GitHub\PracticasUniversidad\Programacion Concurrente\Practica2ProgConcurrente\practica2.gpr
+20220109030752 157ae7a61ab3320c63421e3e9a9177d9
 [BOUND OBJECT FILES]
-C:\Users\vicbl\Desktop\Practica2CompConcurrente\obj\cuerda.o
-C:\Users\vicbl\Desktop\Practica2CompConcurrente\obj\main.o
+C:\Users\vicbl\Documents\GitHub\PracticasUniversidad\Programacion Concurrente\Practica2ProgConcurrente\obj\cuerda.o
+C:\Users\vicbl\Documents\GitHub\PracticasUniversidad\Programacion Concurrente\Practica2ProgConcurrente\obj\main.o
 [GENERATED SOURCE FILES]
 b__main.ads
 b__main.adb
 b__main.ali
 [RESULTING OPTIONS]
--LC:\Users\vicbl\Desktop\Practica2CompConcurrente\obj\
--LC:\Users\vicbl\Desktop\Practica2CompConcurrente\obj\
+-LC:\Users\vicbl\Documents\GitHub\PracticasUniversidad\Programacion Concurrente\Practica2ProgConcurrente\obj\
+-LC:\Users\vicbl\Documents\GitHub\PracticasUniversidad\Programacion Concurrente\Practica2ProgConcurrente\obj\
 -LC:/gnat/lib/gcc/x86_64-w64-mingw32/10.3.1/adalib/
 -static
 -static-libgcc

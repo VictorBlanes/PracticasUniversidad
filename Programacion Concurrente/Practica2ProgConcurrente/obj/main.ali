@@ -27,7 +27,7 @@ RV MAX_TASK_ENTRIES=1
 RV MAX_TASKS=1+
 RV MAX_ENTRY_QUEUE_LENGTH=1+
 
-U main%b		main.adb		96a16cf1 NE OO SU IL
+U main%b		main.adb		9bd515a6 NE OO SU IL
 W ada%s			ada.ads			ada.ali
 Z ada.calendar.delays%s	a-caldel.adb		a-caldel.ali
 Z ada.exceptions%s	a-except.adb		a-except.ali
@@ -70,12 +70,12 @@ D a-stuten.ads		20210520051130 808c40ad ada.strings.utf_encoding%s
 D a-tags.ads		20210520051130 9eaa38c6 ada.tags%s
 D a-textio.ads		20210520051130 aef4d56d ada.text_io%s
 D a-unccon.ads		20210520051130 0e9b276f ada.unchecked_conversion%s
-D cuerda.ads		20220111060938 16e47b88 cuerda%s
+D cuerda.ads		20220117023752 2af0b7f8 cuerda%s
 D interfac.ads		20210520051132 edec285f interfaces%s
 D i-c.ads		20210520051132 d9beded9 interfaces.c%s
 D i-cstrin.ads		20210520051132 341d0ddf interfaces.c.strings%s
 D i-cstrea.ads		20210520051132 e53d8b8e interfaces.c_streams%s
-D main.adb		20220111060924 77351de7 main%b
+D main.adb		20220117023020 4655a8c0 main%b
 D system.ads		20210520051136 2ffa5114 system%s
 D s-atacco.ads		20210520051132 4c36d12f system.address_to_access_conversions%s
 D s-conca4.ads		20210520051132 7e642b20 system.concat_4%s
@@ -120,60 +120,60 @@ D s-wchcon.ads		20210520051136 1b7d22d2 system.wch_con%s
 D s-win32.ads		20210520051136 15ac53fb system.win32%s
 D unchconv.ads		20210520051136 ca2f9e18 unchecked_conversion%s
 G a e
-G c Z b b [main standard 5 11 none]
-G r s monitor [main standard 5 11 none] [monitorVIP cuerda 4 4 none]
-G r o none [main standard 5 11 none] [entracuerda cuerda__monitor 5 13 none]
-G r p none [main standard 5 11 none] [salecuerda cuerda__monitor 6 17 none]
+G c Z b b [main standard 15 11 none]
+G r s monitor [main standard 15 11 none] [monitorVIP cuerda 6 4 none]
+G r o none [main standard 15 11 none] [entracuerda cuerda__monitor 7 13 none]
+G r p none [main standard 15 11 none] [salecuerda cuerda__monitor 8 17 none]
 X 1 ada.ads
-16K9*Ada 20e8 23|1r6 1r23 3r6 13r31
+16K9*Ada 20e8 23|11r6 11r23 13r6 25r31
 X 7 a-numeri.ads
-16K13*Numerics 35e17 23|3r10 13r35
+16K13*Numerics 35e17 23|13r10 25r35
 X 8 a-nudira.ads
-44k22*Discrete_Random 81e33 23|3w19 13r44
-50R9 Generator<41|65R9> 23|15r12[13]
-52V13 Random{23|12I12} 23|19s17[13]
-61U14 Reset<41|103p14> 23|18s10[13]
+44k22*Discrete_Random 81e33 23|13w19 25r44
+50R9 Generator<41|65R9> 23|27r12[25]
+52V13 Random{23|24I12} 23|31s17[25]
+61U14 Reset<41|103p14> 23|30s10[25]
 X 9 a-nudira.adb
-53V16 Random[41|86]{23|12I12} 42|402b13[23|13]
-65V16 Random[41|86]{23|12I12} 42|402b13[23|13]
+53V16 Random[41|86]{23|24I12} 42|402b13[23|25]
+65V16 Random[41|86]{23|24I12} 42|402b13[23|25]
 X 16 a-textio.ads
-58K13*Text_IO 725e16 23|1w10 1r27
-506U14*Put_Line 23|39s7 49s10 52s7
+58K13*Text_IO 725e16 23|11w10 11r27
+506U14*Put_Line 23|53s7 63s10 66s7
 X 18 cuerda.ads
-1K9*cuerda 14e11 23|2w6 2r18
-2E9*estado_cuerda 2e45 23|25r45 30r17 34r47 40r18 49r32 52r29 63r31 65r31
-2n27*Norte{2E9} 23|63r46
-2n34*Sur{2E9} 23|65r46
-4W19*Monitor 12e15 23|9r7
-5Y13 entraCuerda 23|44s15
-6U17 saleCuerda 23|47s12
+3K9*cuerda 15e11 23|12w6 12r18
+4E9*estado_cuerda 4e45 23|36r45 44r17 48r47 54r18 63r32 66r29 76r31 78r31
+4n27*Norte{4E9} 23|76r46
+4n34*Sur{4E9} 23|78r46
+6W19*Monitor 13e15 23|19r7
+7Y13 entraCuerda 23|58s15
+8U17 saleCuerda 23|61s12
 X 19 interfac.ads
 79M9*Unsigned_32
 82M9*Unsigned_64
 X 23 main.adb
-5U11*main 5b11 69l5 69t9
-6i4 NUM_BABUINOS{integer} 56r32 61r22
-7i4 NUM_LOOPS{integer} 41r19 50r82
-9w4 S{18|4W19} 44r13 47r10
-11V13 randomNum{integer} 11b13 21l8 21t17 37s30
-12I12 randRange<short_integer> 13r60 16r12
-13K15 Rand_Int[8|44] 14r11
-15r7 gen{8|50R9[13]} 18r16 19r24
-16i7 num{12I12} 19m10 20r25
-24T14 tarea 26l8 26e13 28b14 54l8 54t13 56r49
-25Y13 Start 25>19 25>36 34b14 38l11 38t16 63s20 65s20
-25i19 Idx{integer} 35r20
-25e36 estc{18|2E9} 36r21
-29i7 My_Idx{integer} 35m10 39r55 44r45 47r32 49r77 52r74
-30e7 My_estc{18|2E9} 36m10 40r38 44r27 47r23 49r52 52r49
-31i7 velocidad{integer} 37m10 46r25 48r25
-32b7 success{boolean} 42m10 43r20 44m36
-34i21 Idx{integer}
-34e38 estc{18|2E9}
-41i11 i{integer} 50r55
-56A9 babuinos(24T14)<integer> 57r7
-57a4 t{56A9} 63r13 65r13
-61i11 Idx{integer} 62r13 63r15 63r26 65r15 65r26
+15U11*main 15b11 81l5 81t9
+16i4 NUM_BABUINOS{integer} 70r32 74r22
+17i4 NUM_LOOPS{integer} 55r19 64r82
+19w4 S{18|6W19} 58r13 61r10
+23V13 randomNum{integer} 23b13 33l8 33t17 51s30
+24I12 randRange<short_integer> 25r60 28r12
+25K15 Rand_Int[8|44] 26r11
+27r7 gen{8|50R9[25]} 30r16 31r24
+28i7 num{24I12} 31m10 32r25
+35T14 tarea 37l8 37e13 42b14 68l8 68t13 70r49
+36Y13 Start 36>19 36>36 48b14 52l11 52t16 76s20 78s20
+36i19 Idx{integer} 49r20
+36e36 estc{18|4E9} 50r21
+43i7 My_Idx{integer} 49m10 53r55 58r45 61r32 63r77 66r74
+44e7 My_estc{18|4E9} 50m10 54r38 58r27 61r23 63r52 66r49
+45i7 velocidad{integer} 51m10 60r25 62r25
+46b7 success{boolean} 56m10 57r20 58m36
+48i21 Idx{integer}
+48e38 estc{18|4E9}
+55i11 i{integer} 64r55
+70A9 babuinos(35T14)<integer> 71r7
+71a4 t{70A9} 76r13 78r13
+74i11 Idx{integer} 75r13 76r15 76r26 78r15 78r26
 X 41 s-rannum.ads
 77V13*Random{19|79M9} 42|224i21
 78V13*Random{19|82M9} 42|224i21

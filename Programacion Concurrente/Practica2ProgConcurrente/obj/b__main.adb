@@ -326,10 +326,10 @@ package body ada_main is
    end;
 
 --  BEGIN Object file/option list
-   --   C:\Users\vicbl\Desktop\Practica2CompConcurrente\obj\cuerda.o
-   --   C:\Users\vicbl\Desktop\Practica2CompConcurrente\obj\main.o
-   --   -LC:\Users\vicbl\Desktop\Practica2CompConcurrente\obj\
-   --   -LC:\Users\vicbl\Desktop\Practica2CompConcurrente\obj\
+   --   C:\Users\vicbl\Documents\GitHub\PracticasUniversidad\Programacion Concurrente\Practica2ProgConcurrente\obj\cuerda.o
+   --   C:\Users\vicbl\Documents\GitHub\PracticasUniversidad\Programacion Concurrente\Practica2ProgConcurrente\obj\main.o
+   --   -LC:\Users\vicbl\Documents\GitHub\PracticasUniversidad\Programacion Concurrente\Practica2ProgConcurrente\obj\
+   --   -LC:\Users\vicbl\Documents\GitHub\PracticasUniversidad\Programacion Concurrente\Practica2ProgConcurrente\obj\
    --   -LC:/gnat/lib/gcc/x86_64-w64-mingw32/10.3.1/adalib/
    --   -static
    --   -lgnarl

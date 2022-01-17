@@ -1,3 +1,5 @@
+-- Package cuerda
+-- Se encarga de la gestion de acceso a la seccion critica.
 package cuerda is
    type estado_cuerda is (Norte, Sur, Libre);
    
@@ -8,7 +10,6 @@ package cuerda is
       Cap_Maxima: Natural := Inicial;
       En_Cuerda: Natural := 0;
       est: estado_cuerda := Libre;
-      permiso: Boolean := true;
    end Monitor;
 
 end cuerda;
