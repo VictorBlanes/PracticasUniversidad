@@ -26,21 +26,21 @@
       <vfs_project />
       <vfs_file>C:\GNAT\bin\src\def_monitor.adb</vfs_file>
     </file_marker>
+    <file_marker column=" 4" line=" 52" >
+      <vfs_project />
+      <vfs_file>C:\GNAT\bin\src\main.adb</vfs_file>
+    </file_marker>
     <file_marker column=" 1" line=" 1" >
+      <vfs_project />
+      <vfs_file>C:\Users\vicbl\Documents\GitHub\PracticasUniversidad\Programacion Concurrente\Practica2ProgConcurrente\practica2.gpr</vfs_file>
+    </file_marker>
+    <file_marker column=" 33" line=" 60" >
       <vfs_project>C:\Users\vicbl\Documents\GitHub\PracticasUniversidad\Programacion Concurrente\Practica2ProgConcurrente\practica2.gpr</vfs_project>
       <vfs_file>C:\Users\vicbl\Documents\GitHub\PracticasUniversidad\Programacion Concurrente\Practica2ProgConcurrente\src\main.adb</vfs_file>
     </file_marker>
-    <file_marker column=" 19" line=" 59" >
-      <vfs_project>C:\Users\vicbl\Documents\GitHub\PracticasUniversidad\Programacion Concurrente\Practica2ProgConcurrente\practica2.gpr</vfs_project>
-      <vfs_file>C:\Users\vicbl\Documents\GitHub\PracticasUniversidad\Programacion Concurrente\Practica2ProgConcurrente\src\main.adb</vfs_file>
-    </file_marker>
-    <file_marker column=" 1" line=" 1" >
+    <file_marker current="true" column=" 27" line=" 12" >
       <vfs_project>C:\Users\vicbl\Documents\GitHub\PracticasUniversidad\Programacion Concurrente\Practica2ProgConcurrente\practica2.gpr</vfs_project>
       <vfs_file>C:\Users\vicbl\Documents\GitHub\PracticasUniversidad\Programacion Concurrente\Practica2ProgConcurrente\src\cuerda.ads</vfs_file>
-    </file_marker>
-    <file_marker current="true" column=" 1" line=" 1" >
-      <vfs_project>C:\Users\vicbl\Documents\GitHub\PracticasUniversidad\Programacion Concurrente\Practica2ProgConcurrente\practica2.gpr</vfs_project>
-      <vfs_file>C:\Users\vicbl\Documents\GitHub\PracticasUniversidad\Programacion Concurrente\Practica2ProgConcurrente\src\cuerda.adb</vfs_file>
     </file_marker>
   </Project>
   <Project >

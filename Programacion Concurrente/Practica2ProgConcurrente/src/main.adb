@@ -7,7 +7,7 @@
 -- haber babuinos del norte y del sur cruzando la cuerda al mismo tiempo.
 
 -- Autor: Victor Manuel Blanes Castro
--- Link video:
+-- Link video: https://youtu.be/yflUAgpczPM
 with Ada.Text_IO; use Ada.Text_IO;
 with cuerda; use cuerda;
 with ada.Numerics.Discrete_Random;
@@ -15,8 +15,8 @@ with ada.Numerics.Discrete_Random;
 procedure main is
    NUM_BABUINOS: constant integer := 10;
    NUM_LOOPS: constant integer := 3;
-
-   S: Monitor(3);
+   CAP_CUERDA: constant natural := 3;
+   S: Monitor(CAP_CUERDA);
 
    -- randoNum
    -- Devuelve un numero aleatorio entre 1 y 250
