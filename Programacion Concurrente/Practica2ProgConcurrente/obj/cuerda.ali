@@ -6,19 +6,21 @@ P ZX
 
 RN
 RV SIMPLE_BARRIERS
+RV PURE_BARRIERS
 RV NO_DIRECT_BOOLEAN_OPERATORS
 RV NO_ENUMERATION_MAPS
 RV NO_EXCEPTION_HANDLERS
 RV NO_EXCEPTION_PROPAGATION
 RV NO_EXCEPTIONS
 RV NO_IO
+RV NO_IMPLICIT_CONDITIONALS
 RV NO_PROTECTED_TYPES
 RV NO_STANDARD_STORAGE_POOLS
 RV NO_DYNAMIC_SIZED_OBJECTS
 RV NO_IMPLEMENTATION_PRAGMAS
-RV MAX_PROTECTED_ENTRIES=1
+RV MAX_PROTECTED_ENTRIES=3
 
-U cuerda%b		cuerda.adb		4ea11265 NE OO PK IL
+U cuerda%b		cuerda.adb		1b1ac669 NE OO PK IL
 W ada%s			ada.ads			ada.ali
 Z ada.strings.text_buffers%s  a-sttebu.adb	a-sttebu.ali
 W ada.text_io%s		a-textio.adb		a-textio.ali
@@ -31,7 +33,7 @@ Z system.tasking.protected_objects%s  s-taprob.adb  s-taprob.ali
 Z system.tasking.protected_objects.entries%s  s-tpoben.adb  s-tpoben.ali
 Z system.tasking.protected_objects.operations%s  s-tpobop.adb  s-tpobop.ali
 
-U cuerda%s		cuerda.ads		2af0b7f8 EE NE OO PK IL
+U cuerda%s		cuerda.ads		58e48df9 EE NE OO PK IL
 Z ada.exceptions%s	a-except.adb		a-except.ali
 Z ada.strings.text_buffers%s  a-sttebu.adb	a-sttebu.ali
 Z system%s		system.ads		system.ali
@@ -50,8 +52,8 @@ D a-stuten.ads		20210520051130 808c40ad ada.strings.utf_encoding%s
 D a-tags.ads		20210520051130 9eaa38c6 ada.tags%s
 D a-textio.ads		20210520051130 aef4d56d ada.text_io%s
 D a-unccon.ads		20210520051130 0e9b276f ada.unchecked_conversion%s
-D cuerda.ads		20220117023752 2af0b7f8 cuerda%s
-D cuerda.adb		20220117023642 caa570f0 cuerda%b
+D cuerda.ads		20220211165818 58e48df9 cuerda%s
+D cuerda.adb		20220211165818 ed0a9efd cuerda%b
 D interfac.ads		20210520051132 edec285f interfaces%s
 D i-c.ads		20210520051132 d9beded9 interfaces.c%s
 D i-cstrin.ads		20210520051132 341d0ddf interfaces.c.strings%s
@@ -91,40 +93,43 @@ D unchconv.ads		20210520051136 ca2f9e18 unchecked_conversion%s
 G a e
 G c Z s b [entracuerda cuerda__monitor 7 13 none]
 G c Z s b [salecuerda cuerda__monitor 8 17 none]
+G c Z s b [usarcuerda cuerda__monitor 9 16 none]
 G c Z s b [monitor__salecuerdaN cuerda 8 7 none]
 G c Z s b [monitor__salecuerdaP cuerda 8 7 none]
+G c Z s b [monitor__usarcuerdaN cuerda 9 7 none]
+G c Z s b [monitor__usarcuerdaP cuerda 9 7 none]
+G c Z s s [F10sIP cuerda 6 4 none]
 G c Z s s [monitorVDI cuerda 6 4 none]
 G c Z s s [monitorVDF cuerda 6 4 none]
 G c Z s s [monitorVIP cuerda 6 4 none]
-G c Z s s [P4sIP cuerda 7 7 none]
+G c Z s s [P2sIP cuerda 7 7 none]
 X 1 ada.ads
 16K9*Ada 20e8 13|1r6 1r23
 X 10 a-textio.ads
 58K13*Text_IO 725e16 13|1w10 1r27
-506U14*Put_Line 13|15s13 19s13 33s10 36s10 40s13
+506U14*Put_Line 13|14s13 18s13 28s10 31s10 35s13
 X 12 cuerda.ads
-3K9*cuerda 15l5 15e11 13|2b14 45l5 45t11
-4E9*estado_cuerda 4e45 7r38 8r41 12r12 13|11r38 14r36 15r41 18r20 20r43 31r41
-. 33r38 37r40 39r20
+3K9*cuerda 16l5 16e11 13|2b14 45l5 45t11
+4E9*estado_cuerda 4e45 7r26 8r41 9r40 13r12 13|11r40 14r41 17r20 19r43 26r41
+. 28r38 32r40 34r20 39r40 41r23 41r54
 4n27*Norte{4E9}
 4n34*Sur{4E9}
-4n39*Libre{4E9} 12r29 13|14r51 39r35
-6W19*Monitor 6d27 10E7 13l8 13e15 13|4b19 43l8 43t15
-6i27 Inicial{natural} 10r30
-7Y13 entraCuerda 7>25 7<53 7>75 13|11b13 25l11 25t22
-7e25 babuino{4E9} 13|14r13 15r61 18r35
-7b53 success{boolean} 13|21m13 23m13
-7i75 idx{integer} 13|15r86
-8U17 saleCuerda 8>28 8>56 13|31b17 42l11 42t21
-8e28 babuino{4E9} 13|31b28 33r58
-8i56 idx{integer} 13|31b56 33r83
-10i7 Cap_Maxima{natural} 13|12r26
-11i7 En_Cuerda{natural} 13|12r14 17r13 17r26 19r75 35r10 35r23 36r72 38r14
-12e7 est{4E9} 13|14r23 14r30 18r13 20r63 37r60 39r13
+4n39*Libre{4E9} 13r29 13|34r35 41r38
+6W19*Monitor 6d27 11E7 14l8 14e15 13|4b19 43l8 43t15
+6i27 Inicial{natural} 11r30
+7Y13 entraCuerda 7>41 13|11b13 20l11 20t22
+7i41 idx{integer} 13|14r86
+8U17 saleCuerda 8>28 8>56 13|26b17 37l11 37t21
+8e28 babuino{4E9} 13|26b28 28r58
+8i56 idx{integer} 13|26b56 28r83
+9V16 usarCuerda{boolean} 9>27 13|12s41 39b16 42l14 42t24
+9e27 babuino{4E9} 13|39b27 41r69
+11i7 Cap_Maxima{natural} 13|12r26
+12i7 En_Cuerda{natural} 13|12r14 16r13 16r26 18r75 30r10 30r23 31r72 33r14
+13e7 est{4E9} 13|17r13 19r63 32r60 34r13 41r17 41r48
 X 13 cuerda.adb
-11e25 babuino{12|4E9}
-11b53 success{boolean}
-11i75 idx{integer}
+11e29 babuino
+11i55 idx{integer}
 X 35 s-stausa.ads
 208U14*Initialize 209i<c,__gnat_stack_usage_initialize>22
 273U14*Output_Results 277i<c,__gnat_stack_usage_output_results>22

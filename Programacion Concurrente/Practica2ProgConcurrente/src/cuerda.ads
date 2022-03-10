@@ -4,8 +4,9 @@ package cuerda is
    type estado_cuerda is (Norte, Sur, Libre);
    
    protected type Monitor(Inicial: Natural) is
-      entry entraCuerda(babuino: in  estado_cuerda; success: out Boolean; idx: in Integer);
+      entry entraCuerda (estado_cuerda)(idx: in Integer);
       procedure saleCuerda(babuino: in  estado_cuerda; idx: in Integer);
+      function usarCuerda(babuino: in  estado_cuerda) return Boolean;
    private
       Cap_Maxima: Natural := Inicial;
       En_Cuerda: Natural := 0;

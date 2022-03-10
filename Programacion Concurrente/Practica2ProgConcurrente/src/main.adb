@@ -7,7 +7,7 @@
 -- haber babuinos del norte y del sur cruzando la cuerda al mismo tiempo.
 
 -- Autor: Victor Manuel Blanes Castro
--- Link video: https://youtu.be/yflUAgpczPM
+-- Link video: https://youtu.be/csFOvVE9nw4
 with Ada.Text_IO; use Ada.Text_IO;
 with cuerda; use cuerda;
 with ada.Numerics.Discrete_Random;
@@ -43,7 +43,6 @@ procedure main is
       My_Idx : integer;
       My_estc : estado_cuerda;
       velocidad: Integer;
-      success: Boolean;
       begin
       accept Start (Idx: in integer; estc: in estado_cuerda) do
          My_Idx := Idx;
@@ -53,10 +52,7 @@ procedure main is
       Put_Line("Hola, soy el babuino" & Integer'Image(My_Idx) & " del "
                & estado_cuerda'Image(My_estc)& ".");
       for i in 1..NUM_LOOPS loop
-         success := false;
-         while not success loop
-            s.entraCuerda(My_estc, success, My_Idx);
-         end loop;
+         s.entraCuerda(My_estc)(My_Idx);
          delay Duration(velocidad);
          s.saleCuerda(My_estc, My_Idx);
          delay Duration(velocidad * 2);

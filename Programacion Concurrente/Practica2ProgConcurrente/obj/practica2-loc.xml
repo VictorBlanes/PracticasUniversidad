@@ -1,44 +1,23 @@
 <?xml version="1.0"?>
 <Locations >
-  <Project>
-    <vfs_file>C:\Users\vicbl\Documents\GitHub\PracticasUniversidad\Programacion Concurrente\Practica2ProgConcurrente\practica2.gpr</vfs_file>
-    <file_marker column=" 1" line=" 1" >
-      <vfs_project />
-      <vfs_file>C:\GNAT\bin\src\main.adb</vfs_file>
-    </file_marker>
-    <file_marker column=" 8" line=" 52" >
-      <vfs_project />
-      <vfs_file>C:\GNAT\bin\src\main.adb</vfs_file>
-    </file_marker>
-    <file_marker column=" 1" line=" 1" >
-      <vfs_project />
-      <vfs_file>C:\GNAT\bin\src\def_monitor.adb</vfs_file>
-    </file_marker>
-    <file_marker column=" 1" line=" 1" >
-      <vfs_project />
-      <vfs_file>C:\GNAT\bin\src\def_monitor.ads</vfs_file>
-    </file_marker>
-    <file_marker column=" 1" line=" 1" >
-      <vfs_project />
-      <vfs_file>C:\GNAT\bin\src\def_monitor.ads</vfs_file>
-    </file_marker>
-    <file_marker column=" 1" line=" 1" >
-      <vfs_project />
-      <vfs_file>C:\GNAT\bin\src\def_monitor.adb</vfs_file>
-    </file_marker>
+  <Project >
     <file_marker column=" 4" line=" 52" >
       <vfs_project />
       <vfs_file>C:\GNAT\bin\src\main.adb</vfs_file>
     </file_marker>
+    <file_marker column=" 48" line=" 8" >
+      <vfs_project />
+      <vfs_file>C:\GNAT\bin\src\def_monitor.adb</vfs_file>
+    </file_marker>
     <file_marker column=" 1" line=" 1" >
       <vfs_project />
-      <vfs_file>C:\Users\vicbl\Documents\GitHub\PracticasUniversidad\Programacion Concurrente\Practica2ProgConcurrente\practica2.gpr</vfs_file>
+      <vfs_file>C:\GNAT\bin\src\def_monitor.ads</vfs_file>
     </file_marker>
-    <file_marker column=" 33" line=" 60" >
+    <file_marker column=" 16" line=" 67" >
       <vfs_project>C:\Users\vicbl\Documents\GitHub\PracticasUniversidad\Programacion Concurrente\Practica2ProgConcurrente\practica2.gpr</vfs_project>
       <vfs_file>C:\Users\vicbl\Documents\GitHub\PracticasUniversidad\Programacion Concurrente\Practica2ProgConcurrente\src\main.adb</vfs_file>
     </file_marker>
-    <file_marker current="true" column=" 27" line=" 12" >
+    <file_marker current="true" column=" 7" line=" 13" >
       <vfs_project>C:\Users\vicbl\Documents\GitHub\PracticasUniversidad\Programacion Concurrente\Practica2ProgConcurrente\practica2.gpr</vfs_project>
       <vfs_file>C:\Users\vicbl\Documents\GitHub\PracticasUniversidad\Programacion Concurrente\Practica2ProgConcurrente\src\cuerda.ads</vfs_file>
     </file_marker>
