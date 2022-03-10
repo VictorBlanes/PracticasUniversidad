@@ -1,6 +1,8 @@
 package Controller;
 
 import Model.Data;
+import View.Grafica;
+import java.util.ArrayList;
 import java.util.Random;
 
 public class CostCalculator {
@@ -15,34 +17,30 @@ public class CostCalculator {
         dt = new Data(NUM_GRAPH, LENGTH_GRAPH);
     }
 
-    public void calcCosts(boolean[] selected) {
+    public void calcCosts(Grafica grafica, boolean[] selected) {
         for (int i = 0; i < selected.length; i++) {
-            if(!calcDone[i]){
+            if (!calcDone[i]) {
                 calcCost(Complejidad.values()[i]);
             }
         }
-        
+        dt.dataToView(grafica);
     }
 
-    private double getMax(boolean[] activated) {
-        int cont = 0;
+    public double getMax(boolean[] activated) {
+        ArrayList<Double> maximos = new ArrayList<>();
         double res = 0.0;
-        double[] max_graphs = {Double.MIN_VALUE, Double.MIN_VALUE};
         for (int i = 0; i < NUM_GRAPH; i++) {
             double value = dt.getTimeValuesXY(i, LENGTH_GRAPH - 1);
             if (activated[i]) {
-                cont++;
-                if (max_graphs[1] < value) {
-                    max_graphs[0] = max_graphs[1];
-                    max_graphs[1] = value;
-                }
+                maximos.add(value);
             }
         }
-        if (cont != 0) {
-            if (cont % 2 == 0) {
-                res = (max_graphs[1] + max_graphs[0]) / 2;
+        if (!maximos.isEmpty()) {
+            int size = maximos.size();
+            if (size % 2 == 0) {
+                res = (maximos.get(size / 2) + maximos.get(size / 2 - 1)) / 2;
             } else {
-                res = max_graphs[1];
+                res = maximos.get(size / 2);
             }
         }
         return res;
@@ -102,4 +100,9 @@ public class CostCalculator {
             }
         }
     }
+
+    public int getBASE() {
+        return BASE;
+    }
+
 }

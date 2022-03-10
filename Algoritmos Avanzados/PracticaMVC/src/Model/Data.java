@@ -1,6 +1,7 @@
 package Model;
 
 import Controller.Complejidad;
+import View.Grafica;
 
 public class Data {
 
@@ -8,10 +9,6 @@ public class Data {
 
     public Data(int num_graph, int length_graph) {
         timeValues = new double[num_graph][length_graph];
-    }
-    
-    public showData(int i){
-        
     }
     
     public void calcCostLog(int base, int step) {
@@ -45,5 +42,13 @@ public class Data {
     
     public void setTimeValuesXY(int x, int y, double value) {
         timeValues[x][y] = value;
+    }
+
+    public double[][] getTimeValues() {
+        return timeValues;
+    }
+    
+    public void dataToView(Grafica grafica){
+        grafica.setData(timeValues);
     }
 }

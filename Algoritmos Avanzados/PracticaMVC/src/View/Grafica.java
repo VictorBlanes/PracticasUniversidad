@@ -12,16 +12,14 @@ import javax.swing.JPanel;
  * @author vicbl
  */
 public class Grafica extends JPanel {
+
     //TODO: Obtener la posicion del raton relativa el JPanel en cualquier momento.
-    CostCalculator cc = new CostCalculator();
+    private CostCalculator cc = new CostCalculator();
     private final int HEIGHT = 480;
     private final int WIDTH = 940;
     private final int OFFSET = 30;
-    private final double[][] test = new double[5][10];
-    private final boolean[] isDone = new boolean[5];
     private boolean[] activated = new boolean[5];
-    private double max;
-    private final int base = 5;
+    private double[][] data = null;
 
     public Grafica() {
     }
@@ -40,44 +38,47 @@ public class Grafica extends JPanel {
             g2d.drawLine(longWidth, HEIGHT - OFFSET, longWidth, HEIGHT - 20);
             g2d.drawLine(OFFSET, longHeight, 20, longHeight);
         }
-        paintGraphs(g2d);
+        g2d.drawString("0.00", OFFSET - 27, 15 + OFFSET + (HEIGHT - OFFSET * 2));
+        if (data != null) {
+            paintGraphs(g2d);
+        }
     }
 
     private void paintGraphs(Graphics2D g2d) {
         Color[] palete = {Color.RED, Color.CYAN, Color.YELLOW, Color.GREEN, Color.PINK};
-        max = getMax();
-        g2d.drawString("0.00", OFFSET - 27, 15 + OFFSET + (HEIGHT - OFFSET * 2));
+        double max = cc.getMax(activated);
+        int base = cc.getBASE();
         g2d.drawString(String.format("%.2f", max), OFFSET - 27, OFFSET - 5);
-        g2d.drawString(String.format("%.2f", (double) base * 10), OFFSET + (WIDTH - OFFSET * 2) - 35, 15 + OFFSET + (HEIGHT - OFFSET * 2));
+        g2d.drawString(String.format("%.2f", (double) base * 10),
+                OFFSET + (WIDTH - OFFSET * 2) - 35, 15 + OFFSET + (HEIGHT - OFFSET * 2));
         for (int i = 0; i < activated.length; i++) {
             if (activated[i]) {
-                paintGraph(g2d, palete[i], i);
+                paintGraph(g2d, palete[i], i, max);
             }
         }
     }
 
-    private void paintGraph(Graphics2D g2d, Color lineColor, int dataPos) {
+    private void paintGraph(Graphics2D g2d, Color lineColor, int ind, double max) {
         double start, end;
         int graph_height = HEIGHT - OFFSET * 2;
         g2d.setColor(lineColor);
-        end = (test[dataPos][0] / max) * graph_height;
+        end = (data[ind][0] / max) * graph_height;
         g2d.drawLine(OFFSET, HEIGHT - OFFSET,
                 OFFSET + (WIDTH - OFFSET * 2) / 10, HEIGHT - (OFFSET + (int) end));
         start = end;
-        for (int i = 0; i < test[dataPos].length - 1; i++) {
-            end = (test[dataPos][i + 1] / max) * graph_height;
+        for (int i = 0; i < data[ind].length - 1; i++) {
+            end = (data[ind][i + 1] / max) * graph_height;
             g2d.fillOval((OFFSET + (i + 1) * (WIDTH - OFFSET * 2) / 10) - 3, HEIGHT - (OFFSET + (int) start) - 3, 5, 5);
             g2d.fillOval((OFFSET + (i + 2) * (WIDTH - OFFSET * 2) / 10) - 3, HEIGHT - (OFFSET + (int) end) - 3, 5, 5);
             g2d.drawLine(OFFSET + (i + 1) * (WIDTH - OFFSET * 2) / 10, HEIGHT - (OFFSET + (int) start),
                     OFFSET + (i + 2) * (WIDTH - OFFSET * 2) / 10, HEIGHT - (OFFSET + (int) end));
             start = end;
-
         }
     }
 
-    public void mostrarGraficos(boolean[] selected) {
+    public void calcGraficos(boolean[] selected) {
         activated = selected;
-        cc.calcCosts(selected);
+        cc.calcCosts(this, selected);
         repaint();
     }
 
@@ -85,4 +86,9 @@ public class Grafica extends JPanel {
     public Dimension getPreferredSize() {
         return new Dimension(WIDTH, HEIGHT);
     }
+
+    public void setData(double[][] data) {
+        this.data = data;
+    }
+
 }

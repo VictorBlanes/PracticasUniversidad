@@ -54,7 +54,7 @@ public class PracticaMVC extends JFrame {
         auto.addActionListener((ActionEvent evt) -> {
             boolean[] selected = {log.isSelected(), n.isSelected(),
                 nlogn.isSelected(), cuadratic.isSelected(), nexp.isSelected()};
-            grafica.mostrarGraficos(selected);
+            grafica.calcGraficos(selected);
 
         });
         
