@@ -78,7 +78,7 @@ public class Grafica extends JPanel {
 
     public void calcGraficos(boolean[] selected) {
         activated = selected;
-        cc.calcCosts(this, selected);
+        cc.calcCostsThread(this, selected); 
         repaint();
     }
 

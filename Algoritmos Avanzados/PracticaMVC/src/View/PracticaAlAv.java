@@ -10,16 +10,16 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-public class PracticaMVC extends JFrame {
+public class PracticaAlAv extends JFrame {
 
-    private static PracticaMVC ventana;
+    private static PracticaAlAv ventana;
     public static Grafica grafica;
     private static JPanel opContainer, editorMode;
     private static JLabel edMode;
     private static JButton auto;
     private static JCheckBox log, n, nlogn, cuadratic, nexp;
 
-    public PracticaMVC() {
+    public PracticaAlAv() {
         super("Practica Patron MVC");
         opContainer = new JPanel();
         editorMode = new JPanel();
@@ -57,7 +57,7 @@ public class PracticaMVC extends JFrame {
             grafica.calcGraficos(selected);
 
         });
-        
+
         this.setLayout(new FlowLayout());
         this.getContentPane().add(opContainer);
         this.getContentPane().add(grafica);
@@ -68,7 +68,7 @@ public class PracticaMVC extends JFrame {
     }
 
     public static void main(String[] args) {
-        ventana = new PracticaMVC();
+        ventana = new PracticaAlAv();
         ventana.setVisible(true);
     }
 

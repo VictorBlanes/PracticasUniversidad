@@ -4,6 +4,8 @@ import Model.Data;
 import View.Grafica;
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class CostCalculator {
 
@@ -14,16 +16,26 @@ public class CostCalculator {
     private final Data dt;
 
     public CostCalculator() {
-        dt = new Data(NUM_GRAPH, LENGTH_GRAPH);
+        dt = new Data(NUM_GRAPH, LENGTH_GRAPH, BASE);
     }
 
-    public void calcCosts(Grafica grafica, boolean[] selected) {
+    public void calcCostsThread(Grafica grafica, boolean[] selected) {
+        ArrayList<Thread> threads = new ArrayList<>();
         for (int i = 0; i < selected.length; i++) {
-            if (!calcDone[i]) {
-                calcCost(Complejidad.values()[i]);
+            if (!calcDone[i] && selected[i]) {
+                threads.add(new Thread(new Data(Complejidad.values()[i])));
+                threads.get(threads.size() - 1).start();
             }
         }
-        dt.dataToView(grafica);
+        try {
+            for (int i = 0; i < threads.size(); i++) {
+                threads.get(i).join();
+                calcDone[i] = true;
+                dt.dataToView(grafica);
+            }
+        } catch (InterruptedException ex) {
+            Logger.getLogger(CostCalculator.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     public double getMax(boolean[] activated) {
@@ -44,52 +56,6 @@ public class CostCalculator {
             }
         }
         return res;
-    }
-
-    private void calcCost(Complejidad tipo) {
-        switch (tipo) {
-            case LOGN -> {
-                if (!calcDone[Complejidad.LOGN.ordinal()]) {
-                    for (int x = 0; x < LENGTH_GRAPH; x++) {
-                        dt.calcCostLog(BASE, x);
-                    }
-                    calcDone[Complejidad.LOGN.ordinal()] = true;
-                }
-            }
-            case N -> {
-                if (!calcDone[Complejidad.N.ordinal()]) {
-                    for (int x = 0; x < LENGTH_GRAPH; x++) {
-                        dt.calcCostN(BASE, x);
-                    }
-                    calcDone[Complejidad.N.ordinal()] = true;
-                }
-            }
-            case NLOGN -> {
-                if (!calcDone[Complejidad.NLOGN.ordinal()]) {
-                    for (int x = 0; x < LENGTH_GRAPH; x++) {
-                        dt.calcCostNLog(BASE, x);
-                    }
-                    calcDone[Complejidad.NLOGN.ordinal()] = true;
-                }
-            }
-            case CUADRATIC -> {
-                if (!calcDone[Complejidad.CUADRATIC.ordinal()]) {
-                    for (int x = 0; x < LENGTH_GRAPH; x++) {
-                        dt.calcCostCuadratic(BASE, x);
-                    }
-                    calcDone[Complejidad.CUADRATIC.ordinal()] = true;
-                }
-            }
-            case NEXP -> {
-                if (!calcDone[Complejidad.NEXP.ordinal()]) {
-                    for (int x = 0; x < LENGTH_GRAPH; x++) {
-                        dt.calcCostNEXP(BASE, x);
-                    }
-                    calcDone[Complejidad.NEXP.ordinal()] = true;
-                }
-            }
-
-        }
     }
 
     private void randomFill() {
