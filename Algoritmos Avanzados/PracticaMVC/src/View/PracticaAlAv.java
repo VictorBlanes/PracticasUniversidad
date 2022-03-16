@@ -16,7 +16,7 @@ public class PracticaAlAv extends JFrame {
     public static Grafica grafica;
     private static JPanel opContainer, editorMode;
     private static JLabel edMode;
-    private static JButton auto;
+    private static JButton start, stop;
     private static JCheckBox log, n, nlogn, cuadratic, nexp;
 
     public PracticaAlAv() {
@@ -24,7 +24,8 @@ public class PracticaAlAv extends JFrame {
         opContainer = new JPanel();
         editorMode = new JPanel();
         edMode = new JLabel("Tipo Funciones");
-        auto = new JButton("Mostrar");
+        start = new JButton("Mostrar");
+        stop = new JButton("Parar");
         log = new JCheckBox("Logaritmica");
         n = new JCheckBox("Lineal");
         nlogn = new JCheckBox("Cuasilineal");
@@ -42,7 +43,8 @@ public class PracticaAlAv extends JFrame {
         editorMode.add(nlogn);
         editorMode.add(cuadratic);
         editorMode.add(nexp);
-        editorMode.add(auto);
+        editorMode.add(start);
+        editorMode.add(stop);
 
         //JPanel que reune todos los JPanel anteriores
         opContainer.setLayout(new BoxLayout(opContainer, BoxLayout.Y_AXIS));
@@ -51,11 +53,15 @@ public class PracticaAlAv extends JFrame {
 
         grafica = new Grafica();
 
-        auto.addActionListener((ActionEvent evt) -> {
+        start.addActionListener((ActionEvent evt) -> {
             boolean[] selected = {log.isSelected(), n.isSelected(),
                 nlogn.isSelected(), cuadratic.isSelected(), nexp.isSelected()};
             grafica.calcGraficos(selected);
 
+        });
+        
+        stop.addActionListener((ActionEvent evt) -> {
+            grafica.stopCalc();
         });
 
         this.setLayout(new FlowLayout());

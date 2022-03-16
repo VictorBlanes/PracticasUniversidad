@@ -1,6 +1,7 @@
 package Model;
 
 import Controller.Complejidad;
+import Controller.CostCalculator;
 import View.Grafica;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -10,10 +11,13 @@ public class Data implements Runnable {
     private static double[][] timeValues;
     private static int BASE;
     private Complejidad comp;
+    private static CostCalculator costCalc;
+    private static boolean active;
 
-    public Data(int num_graph, int length_graph, int base) {
+    public Data(int num_graph, int length_graph, int base, CostCalculator costCalc) {
         timeValues = new double[num_graph][length_graph];
         this.BASE = base;
+        this.costCalc = costCalc;
     }
 
     public Data(Complejidad comp) {
@@ -76,33 +80,52 @@ public class Data implements Runnable {
         try {
             switch (comp) {
                 case LOGN -> {
-                    for (int x = 0; x < timeValues[comp.ordinal()].length; x++) {
+                    for (int x = 0; x < timeValues[comp.ordinal()].length && active; x++) {
                         calcCostLog(BASE, x);
+                    }
+                    if (active) {
+                        costCalc.dataToView(timeValues, comp.ordinal());
                     }
                 }
                 case N -> {
-                    for (int x = 0; x < timeValues[comp.ordinal()].length; x++) {
+                    for (int x = 0; x < timeValues[comp.ordinal()].length && active; x++) {
                         calcCostN(BASE, x);
+                    }
+                    if (active) {
+                        costCalc.dataToView(timeValues, comp.ordinal());
                     }
                 }
                 case NLOGN -> {
-                    for (int x = 0; x < timeValues[comp.ordinal()].length; x++) {
+                    for (int x = 0; x < timeValues[comp.ordinal()].length && active; x++) {
                         calcCostNLog(BASE, x);
+                    }
+                    if (active) {
+                        costCalc.dataToView(timeValues, comp.ordinal());
                     }
                 }
                 case CUADRATIC -> {
-                    for (int x = 0; x < timeValues[comp.ordinal()].length; x++) {
+                    for (int x = 0; x < timeValues[comp.ordinal()].length && active; x++) {
                         calcCostCuadratic(BASE, x);
+                    }
+                    if (active) {
+                        costCalc.dataToView(timeValues, comp.ordinal());
                     }
                 }
                 case NEXP -> {
-                    for (int x = 0; x < timeValues[comp.ordinal()].length; x++) {
+                    for (int x = 0; x < timeValues[comp.ordinal()].length && active; x++) {
                         calcCostNEXP(BASE, x);
+                    }
+                    if (active) {
+                        costCalc.dataToView(timeValues, comp.ordinal());
                     }
                 }
             }
         } catch (InterruptedException ex) {
             Logger.getLogger(Data.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    public void setActive(boolean b) {
+        active = b;
     }
 }

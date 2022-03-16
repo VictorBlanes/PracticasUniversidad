@@ -14,11 +14,12 @@ import javax.swing.JPanel;
 public class Grafica extends JPanel {
 
     //TODO: Obtener la posicion del raton relativa el JPanel en cualquier momento.
-    private CostCalculator cc = new CostCalculator();
+    private CostCalculator cc = new CostCalculator(this);
     private final int HEIGHT = 480;
     private final int WIDTH = 940;
     private final int OFFSET = 30;
     private boolean[] activated = new boolean[5];
+    private boolean[] calcDone = new boolean[5];
     private double[][] data = null;
 
     public Grafica() {
@@ -52,7 +53,7 @@ public class Grafica extends JPanel {
         g2d.drawString(String.format("%.2f", (double) base * 10),
                 OFFSET + (WIDTH - OFFSET * 2) - 35, 15 + OFFSET + (HEIGHT - OFFSET * 2));
         for (int i = 0; i < activated.length; i++) {
-            if (activated[i]) {
+            if (activated[i] && calcDone[i]) {
                 paintGraph(g2d, palete[i], i, max);
             }
         }
@@ -78,10 +79,13 @@ public class Grafica extends JPanel {
 
     public void calcGraficos(boolean[] selected) {
         activated = selected;
+        calcDone = new boolean[5];
         cc.calcCostsThread(this, selected); 
-        repaint();
     }
-
+    public void stopCalc(){
+        cc.stopCalc();
+    }
+    
     @Override
     public Dimension getPreferredSize() {
         return new Dimension(WIDTH, HEIGHT);
@@ -89,6 +93,11 @@ public class Grafica extends JPanel {
 
     public void setData(double[][] data) {
         this.data = data;
+        repaint();
+    }
+    
+    public void calcDone(int index){
+        calcDone[index] = true;
     }
 
 }

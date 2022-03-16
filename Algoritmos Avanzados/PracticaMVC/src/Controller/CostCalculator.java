@@ -9,32 +9,24 @@ import java.util.logging.Logger;
 
 public class CostCalculator {
 
-    private final boolean[] calcDone = new boolean[5];
+//    private final boolean[] calcDone = new boolean[5];
     private final int BASE = 5;
     private final int NUM_GRAPH = 5;
     private final int LENGTH_GRAPH = 10;
-    private final Data dt;
-
-    public CostCalculator() {
-        dt = new Data(NUM_GRAPH, LENGTH_GRAPH, BASE);
+    private final Data dt = new Data(NUM_GRAPH, LENGTH_GRAPH, BASE, this);
+    private Grafica graf;
+    public CostCalculator(Grafica graf) {
+        this.graf = graf;
     }
 
     public void calcCostsThread(Grafica grafica, boolean[] selected) {
         ArrayList<Thread> threads = new ArrayList<>();
+        dt.setActive(true);
         for (int i = 0; i < selected.length; i++) {
-            if (!calcDone[i] && selected[i]) {
+            if (selected[i]) {
                 threads.add(new Thread(new Data(Complejidad.values()[i])));
                 threads.get(threads.size() - 1).start();
             }
-        }
-        try {
-            for (int i = 0; i < threads.size(); i++) {
-                threads.get(i).join();
-                calcDone[i] = true;
-                dt.dataToView(grafica);
-            }
-        } catch (InterruptedException ex) {
-            Logger.getLogger(CostCalculator.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -69,6 +61,15 @@ public class CostCalculator {
 
     public int getBASE() {
         return BASE;
+    }
+
+    public void dataToView(double[][] data, int graph_done) {
+        graf.setData(data);
+        graf.calcDone(graph_done);
+    }
+
+    public void stopCalc() {
+        dt.setActive(false);
     }
 
 }
