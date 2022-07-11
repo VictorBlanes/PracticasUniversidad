@@ -1,131 +1,63 @@
 package Model;
 
-import Controller.Complejidad;
-import Controller.CostCalculator;
-import View.Grafica;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import Controller.Controlador;
+import practicaMVC.PerEsdeveniments;
 
-public class Data implements Runnable {
+public class Data implements PerEsdeveniments {
 
-    private static double[][] timeValues;
-    private static int BASE;
-    private Complejidad comp;
-    private static CostCalculator costCalc;
-    private static boolean active;
+    private static Controlador controlador;
+    private int base;
+    private int num_graph;
+    private int length_graph;
+    private double[][] timeValues;
+    private boolean[] calcDone;
 
-    public Data(int num_graph, int length_graph, int base, CostCalculator costCalc) {
-        timeValues = new double[num_graph][length_graph];
-        this.BASE = base;
-        this.costCalc = costCalc;
+    public Data(Controlador controlador, int num_graph, int length_graph, int base) {
+        Data.controlador = controlador;
+        this.base = base;
+        this.length_graph = length_graph;
+        this.num_graph = num_graph;
+        this.timeValues = new double[num_graph][length_graph];
+        this.calcDone = new boolean[num_graph];
     }
 
-    public Data(Complejidad comp) {
-        this.comp = comp;
+    public void setTimeValues(int funcion, int step, double value) {
+        timeValues[funcion][step] = value;
     }
 
-    public void calcCostLog(int base, int step) throws InterruptedException {
-        double ite = (Math.log10(base * (step + 1)) / Math.log10(2));
-        Thread.sleep((long) ite);
-
-        timeValues[Complejidad.LOGN.ordinal()][step] = ite;
-    }
-
-    public void calcCostN(int base, int step) throws InterruptedException {
-        double ite = base * (step + 1);
-        Thread.sleep((long) ite);
-        timeValues[Complejidad.N.ordinal()][step] = ite;
-    }
-
-    public void calcCostNLog(int base, int step) throws InterruptedException {
-        double ite = (base * (step + 1)) * (Math.log10(base * (step + 1)) / Math.log10(2));
-        Thread.sleep((long) ite);
-        timeValues[Complejidad.NLOGN.ordinal()][step] = ite;
-    }
-
-    public void calcCostCuadratic(int base, int step) throws InterruptedException {
-        double ite = (base * (step + 1)) * (base * (step + 1));
-        Thread.sleep((long) ite);
-        timeValues[Complejidad.CUADRATIC.ordinal()][step] = ite;
-    }
-
-    public void calcCostNEXP(int base, int step) throws InterruptedException {
-        double ite = Math.pow(2, base * (step + 1));
-        double sec = ite / 1000;
-        double minutes = sec / 60;
-        double hours = minutes / 60;
-        double days = hours / 24;
-        System.out.printf("2^n con n = %-2d tardaria: %-30s %-30s %-30s %-30s\n", base * (step + 1), sec + " segundos", minutes + " minutos", hours + " horas", days + " dias");
-        timeValues[Complejidad.NEXP.ordinal()][step] = ite;
-    }
-
-    public double getTimeValuesXY(int x, int y) {
+    public double getTimeValuesValue(int x, int y) {
         return timeValues[x][y];
-    }
-
-    public void setTimeValuesXY(int x, int y, double value) {
-        timeValues[x][y] = value;
     }
 
     public double[][] getTimeValues() {
         return timeValues;
     }
 
-    public void dataToView(Grafica grafica) {
-        grafica.setData(timeValues);
+    public int getBase() {
+        return base;
+    }
+
+    public boolean[] getCalcDone() {
+        return calcDone;
+    }
+
+    public void setCalcDone(int ind) {
+        this.calcDone[ind] = true;
+    }
+
+    public int getNum_graph() {
+        return num_graph;
+    }
+
+    public int getLength_graph() {
+        return length_graph;
     }
 
     @Override
-    public void run() {
-        try {
-            switch (comp) {
-                case LOGN -> {
-                    for (int x = 0; x < timeValues[comp.ordinal()].length && active; x++) {
-                        calcCostLog(BASE, x);
-                    }
-                    if (active) {
-                        costCalc.dataToView(timeValues, comp.ordinal());
-                    }
-                }
-                case N -> {
-                    for (int x = 0; x < timeValues[comp.ordinal()].length && active; x++) {
-                        calcCostN(BASE, x);
-                    }
-                    if (active) {
-                        costCalc.dataToView(timeValues, comp.ordinal());
-                    }
-                }
-                case NLOGN -> {
-                    for (int x = 0; x < timeValues[comp.ordinal()].length && active; x++) {
-                        calcCostNLog(BASE, x);
-                    }
-                    if (active) {
-                        costCalc.dataToView(timeValues, comp.ordinal());
-                    }
-                }
-                case CUADRATIC -> {
-                    for (int x = 0; x < timeValues[comp.ordinal()].length && active; x++) {
-                        calcCostCuadratic(BASE, x);
-                    }
-                    if (active) {
-                        costCalc.dataToView(timeValues, comp.ordinal());
-                    }
-                }
-                case NEXP -> {
-                    for (int x = 0; x < timeValues[comp.ordinal()].length && active; x++) {
-                        calcCostNEXP(BASE, x);
-                    }
-                    if (active) {
-                        costCalc.dataToView(timeValues, comp.ordinal());
-                    }
-                }
-            }
-        } catch (InterruptedException ex) {
-            Logger.getLogger(Data.class.getName()).log(Level.SEVERE, null, ex);
+    public void notificar(String s) {
+        if (s.startsWith("Limpiar Data")) {
+            this.timeValues = new double[num_graph][length_graph];
+            this.calcDone = new boolean[num_graph];
         }
-    }
-
-    public void setActive(boolean b) {
-        active = b;
     }
 }
